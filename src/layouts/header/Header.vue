@@ -23,7 +23,7 @@
       </template>
 
       <v-list>
-        <v-list-item v-for="(item, i) in userprofile" :key="i" @click="href">
+        <v-list-item v-for="(item, i) in userprofile" :key="i" @click="item.method">
           <v-list-item-title>{{ item.title }}</v-list-item-title>
         </v-list-item>
       </v-list>
@@ -33,6 +33,8 @@
 <script>
 // Utilities
 import { mapState, mapMutations } from "vuex";
+import router from "../../router";
+import axios from "axios";
 export default {
   name: "Header",
 
@@ -45,12 +47,24 @@ export default {
     }
   },
   data: () => ({
+    router : router,
     userprofile: [
       { title: "My Profile" },
       { title: "My Balance" },
       { title: "Inbox" },
       { title: "Account Setting" },
-      { title: "Logout" }
+      { title: "Logout" ,method : () => {
+        axios
+        .delete("/api/logout")
+        .then(res => {
+          if (res.status == 200) {
+            router.push({ name: "Home" });
+          }
+        })
+        .catch(err => {
+          if (err.response.data.message) console.log(err.response.data.message);
+        });
+      }}
     ],
     href() {
       return undefined;
