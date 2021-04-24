@@ -28,10 +28,10 @@ export default new Router({
                   // user has access token, user can open the page
                   next({ name: "Dashboard" });
                 }
-              }
+            }
         },
         {
-            path: '/dash',
+            path: '/dashboard',
             component: Layout,
             // redirect :'dashboard/basic-dashboard',
             beforeEnter: (to, from, next) => {
@@ -45,48 +45,47 @@ export default new Router({
             children: [
                 // Components
                 {
-                    path: 'dashboard/basic-dashboard',
                     name: "Dashboard",
+                    path: '/dashboard/home',
                     component: () => import('@/views/dashboard/BasicDashboard'),
                 },
 
                 {
                     name: 'Alerts',
-                    path: 'pages/alerts',
+                    path: '/dashboard/alerts',
                     component: () => import('@/views/pages/Alerts'),
                 },
 
                 {
                     name: 'Profile',
-                    path: 'pages/profile',
+                    path: '/dashboard/profile',
                     component: () => import('@/views/pages/Profile'),
                 },
 
                 {
                     name: 'Icons',
-                    path: 'pages/icons',
+                    path: '/dashboard/icons',
                     component: () => import('@/views/pages/Icons'),
                 },
 
                 {
                     name: 'TableSimple',
-                    path: 'pages/tables-simple',
+                    path: '/dashboard/tables-simple',
                     component: () => import('@/views/pages/TableSimple'),
                 },
 
                 {
                     name: 'InterviewExperince',
-                    path: 'pages/interview-experience',
+                    path: '/dashboard/interview-experience',
                     component: () => import('@/views/pages/InterviewExperience'),
                 },
+
                 {
                     name: 'Calendar',
-                    path: 'pages/calendar',
+                    path: '/dashboard/calendar',
                     component: () => import('@/views/pages/Calendar'),
                 },
             ]
-
         },
-
     ],
 })

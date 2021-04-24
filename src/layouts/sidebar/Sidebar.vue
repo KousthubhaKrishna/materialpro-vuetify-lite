@@ -61,37 +61,37 @@ export default {
       {
         title: "Dashboard",
         icon: "mdi-view-dashboard",
-        to: "/dash/dashboard/basic-dashboard"
+        to: "/dashboard/home"
       },
 
       {
         title: "Profile",
         icon: "mdi-account-circle",
-        to: "/dash/pages/profile"
+        to: "/dashboard/profile"
       },
 
       {
         title: "Placements",
         icon: "mdi-account-tie",
-        to: "/dash/pages/alerts"
+        to: "/dashboard/alerts"
       },
 
       {
         title: "Calendar",
         icon: "mdi-calendar",
-        to: "/dash/pages/calendar"
+        to: "/dashboard/calendar"
       },
 
       {
         title: "Interview experiences",
         icon: "mdi-tie",
-        to: "/dash/pages/interview-experience"
+        to: "/dashboard/interview-experience"
       },
 
        {
         title: "E-resources",
         icon: "mdi-book",
-        to: "/dash/pages/icons"
+        to: "/dashboard/icons"
       }
     ]
   }),
