@@ -2,11 +2,13 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import VueCookies from 'vue-cookies'
 
-Vue.use(Router)
-Vue.use(VueCookies)
+import Layout from "../src/layouts/Layout.vue";
+
+Vue.use(Router);
+Vue.use(VueCookies);
 
 export default new Router({
-    mode: 'history',
+    mode: 'hash',
     base: process.env.BASE_URL,
     routes: [
         {
@@ -29,8 +31,9 @@ export default new Router({
               }
         },
         {
-            path: '/dashboard',
-            component: () => import('@/layouts/Layout'),
+            path: '/dash',
+            component: Layout,
+            // redirect :'dashboard/basic-dashboard',
             beforeEnter: (to, from, next) => {
                 let access_token = window.$cookies.get("jwt");
                 if (access_token != null) {
@@ -42,7 +45,7 @@ export default new Router({
             children: [
                 // Components
                 {
-                    path: '/',
+                    path: 'dashboard/basic-dashboard',
                     name: "Dashboard",
                     component: () => import('@/views/dashboard/BasicDashboard'),
                 },
@@ -70,7 +73,19 @@ export default new Router({
                     path: 'pages/tables-simple',
                     component: () => import('@/views/pages/TableSimple'),
                 },
+
+                {
+                    name: 'InterviewExperince',
+                    path: 'pages/interview-experience',
+                    component: () => import('@/views/pages/InterviewExperience'),
+                },
+                {
+                    name: 'Calendar',
+                    path: 'pages/calendar',
+                    component: () => import('@/views/pages/Calendar'),
+                },
             ]
+
         },
 
     ],

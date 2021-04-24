@@ -1,6 +1,12 @@
 <template>
   <v-container fluid class="down-top-padding">
     <v-row>
+      <Vision></Vision>
+    </v-row>
+    <v-row>
+      <Team></Team>
+    </v-row>
+    <v-row>
       <v-col cols="12" lg="8">
         <v-card>
           <v-card-text class="pa-5">
@@ -249,6 +255,9 @@
         </v-card>
       </v-col>
     </v-row>
+    
+    <Footer></Footer>
+
   </v-container>
 </template>
 
@@ -358,7 +367,13 @@ export default {
       });
 
       this.task = null;
-    }
+    },
+  },
+   components: {
+      Vision: () => import('@/components/commonDashboard/Vision'),
+      Team: () => import('@/components/commonDashboard/Team'),
+      Footer: ()=>import('@/layouts/footer/Footer') 
   }
+
 };
 </script>

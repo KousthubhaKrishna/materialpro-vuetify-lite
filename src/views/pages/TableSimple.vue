@@ -18,6 +18,14 @@
             <TableSimpleDarktheme></TableSimpleDarktheme>
         </BaseCard>
 
+        <BaseCard heading="Table with CRUD actions">
+            <TableCRUD></TableCRUD>
+        </BaseCard>
+
+        <BaseCard heading="Calender with CRUD actions">
+            <CalendarEvents></CalendarEvents>
+        </BaseCard>
+
       </v-col>
     </v-row>
   </v-container>
@@ -34,7 +42,9 @@ export default {
       TableSimpleFixHeight: () => import('@/components/vuetifyComponents/tables-simple/TableSimpleFixHeight'),
       TableSimpleFixHeader: () => import('@/components/vuetifyComponents/tables-simple/TableSimpleFixHeader'),
       TableSimpleDense: () => import('@/components/vuetifyComponents/tables-simple/TableSimpleDense'),
-      TableSimpleDarktheme: () => import('@/components/vuetifyComponents/tables-simple/TableSimpleDarktheme')
+      TableSimpleDarktheme: () => import('@/components/vuetifyComponents/tables-simple/TableSimpleDarktheme'),
+      TableCRUD: () => import('@/components/vuetifyComponents/tables-simple/TableCRUD'),
+      CalendarEvents: () => import('@/components/vuetifyComponents/calendar/CalendarEvents'),
   }
 };
 </script>

@@ -9,7 +9,7 @@
       </span>
     </v-toolbar-title>
     <v-app-bar-nav-icon
-      class="d-block d-md-none"
+      class="d-block d-mdi-none"
       @click="$vuetify.breakpoint.smAndDown ? setSidebarDrawer(!Sidebar_drawer) : $emit('input', !value)"
     />
     <v-spacer />

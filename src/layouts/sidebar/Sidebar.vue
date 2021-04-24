@@ -3,7 +3,7 @@
     v-model="Sidebar_drawer"
     :dark="SidebarColor !== 'white'"
     :color="SidebarColor"
-    mobile-break-point="960"
+    mobile-breakpoint="960"
     clipped
     :right="$vuetify.rtl"
     mini-variant-width="70"
@@ -61,31 +61,37 @@ export default {
       {
         title: "Dashboard",
         icon: "mdi-view-dashboard",
-        to: "/dashboard/basic-dashboard"
+        to: "/dash/dashboard/basic-dashboard"
       },
 
       {
         title: "Profile",
         icon: "mdi-account-circle",
-        to: "/pages/profile"
+        to: "/dash/pages/profile"
       },
 
       {
-        title: "Alerts",
-        icon: "mdi-alert",
-        to: "/pages/alerts"
+        title: "Placements",
+        icon: "mdi-account-tie",
+        to: "/dash/pages/alerts"
       },
 
       {
-        title: "Icons",
-        icon: "mdi-emoticon",
-        to: "/pages/icons"
+        title: "Calendar",
+        icon: "mdi-calendar",
+        to: "/dash/pages/calendar"
       },
 
       {
-        title: "Basic Table",
-        icon: "mdi-table-column-width",
-        to: "/pages/tables-simple"
+        title: "Interview experiences",
+        icon: "mdi-tie",
+        to: "/dash/pages/interview-experience"
+      },
+
+       {
+        title: "E-resources",
+        icon: "mdi-book",
+        to: "/dash/pages/icons"
       }
     ]
   }),
