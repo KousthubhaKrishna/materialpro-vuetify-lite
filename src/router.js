@@ -8,7 +8,7 @@ Vue.use(Router);
 Vue.use(VueCookies);
 
 export default new Router({
-    mode: 'hash',
+    mode: 'history',
     base: process.env.BASE_URL,
     routes: [
         {
@@ -23,12 +23,19 @@ export default new Router({
             beforeEnter: (to, from, next) => {
                 let access_token = window.$cookies.get("jwt");
                 if (access_token == null) {
-                  next();
+                    next();
                 } else {
-                  // user has access token, user can open the page
-                  next({ name: "Dashboard" });
+                    // user has access token, user can open the page
+                    next({ name: "Dashboard" });
                 }
-            }
+            },
+            children: [
+                {
+                    path: "/login/:email/:token",
+                    component: () => import('@/components/LoginBox'),
+                    props: { default: true }
+                }
+            ]
         },
         {
             path: '/dashboard',
@@ -37,11 +44,11 @@ export default new Router({
             beforeEnter: (to, from, next) => {
                 let access_token = window.$cookies.get("jwt");
                 if (access_token != null) {
-                  next();
+                    next();
                 } else {
-                  next({ name: "Login" });
+                    next({ name: "Login" });
                 }
-              },
+            },
             children: [
                 // Components
                 {

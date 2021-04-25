@@ -4,18 +4,21 @@ import '@/scss/vuetify/overrides.scss'
 Vue.use(Vuetify);
 
 const theme = {
-    primary: '#1e88e5',
-    info: '#1e88e5',
-    success: '#21c1d6',
-    accent: '#fc4b6c',
-    default: '#563dea'
+  primary: '#1976D2',
+  secondary: '#424242',
+  accent: '#82B1FF',
+  error: '#FF5252',
+  info: '#2196F3',
+  success: '#4CAF50',
+  warning: '#FFC107',
 }
 
+
 export default new Vuetify({
-    theme: {
-        themes: {
-          dark: theme,
-          light: theme,
-        },
-      }
+  theme: {
+    themes: {
+      dark: theme,
+      light: theme,
+    },
+  }
 });
