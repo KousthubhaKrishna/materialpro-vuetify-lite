@@ -438,6 +438,7 @@ export default {
     valid: true,
     menu: false,
     disabled: true,
+    is_verified:"",
     generalRules: [
         v => !!v || 'This field is required',
       ],
@@ -517,6 +518,7 @@ export default {
       }
       else{
         axios.patch('/api/students',{
+            is_verified :this.is_verified,
             first_name : this.first_name,
             last_name : this.last_name,
             full_name : this.full_name,
@@ -564,6 +566,7 @@ export default {
               this.disabled = false
             }
             else{
+            this.is_verified = response.data.is_verified;
             this.first_name = response.data.basic_info.first_name;
             this.last_name = response.data.basic_info.last_name;
             this.full_name = response.data.basic_info.full_name;
