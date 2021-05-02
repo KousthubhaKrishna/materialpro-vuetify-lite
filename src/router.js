@@ -28,14 +28,7 @@ export default new Router({
                     // user has access token, user can open the page
                     next({ name: "Dashboard" });
                 }
-            },
-            children: [
-                {
-                    path: "/login/:email/:token",
-                    component: () => import('@/components/LoginBox'),
-                    props: { default: true }
-                }
-            ]
+            }
         },
         {
             path: '/dashboard',
@@ -110,12 +103,28 @@ export default new Router({
                     path: '/dashboard/placements/:id',
                     component: () => import('@/components/studentDashboard/placements/displayPlacement'),
                 },
+                {
+                    name: 'Manage Students',
+                    path: '/dashboard/manage_students',
+                    component: () => import('@/views/special_pages/ManageStudents'),
+                },
 
-                // {
-                //     name: 'Snap',
-                //     path: '/dashboard/snaps',
-                //     component: () => import('@/components/studentDashboard/placements/displayDatasnapshots'),
-                // },
+                {
+                    name: 'Manage PCs',
+                    path: '/dashboard/manage_pcs',
+                    component: () => import('@/views/special_pages/ManagePCs'),
+                },
+
+                {
+                    name: 'Manage Admins',
+                    path: '/dashboard/manage_admins',
+                    component: () => import('@/views/special_pages/ManageAdmins'),
+                },
+                {
+                    name: 'Verify Students',
+                    path: '/dashboard/verify_students',
+                    component: () => import('@/views/special_pages/VerifyStudents'),
+                }
             ]
         },
     ],
