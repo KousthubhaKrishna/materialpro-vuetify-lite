@@ -1,5 +1,19 @@
 <template>
-  <v-container fluid class="down-top-padding">  
+  <v-container fluid class="down-top-padding">
+      <v-card>
+          <v-card-title>
+              {{company.company_name}}
+          </v-card-title>
+          <v-card-text>
+              {{company.description}}
+          </v-card-text>
+      </v-card>
+
+      <v-row><v-col>
+      <AddPlacementDetails></AddPlacementDetails>
+      </v-col>
+      </v-row>
+     
       <v-row>
           <v-col v-for="placement in placements" :key="placement._id">
               <v-card elevation="3" outlined @click="openPlacement(placement._id)">
@@ -12,6 +26,8 @@
           </v-col>
       </v-row>
 
+      
+    
   </v-container>
 </template>
 
@@ -20,7 +36,7 @@ import axios from 'axios'
 
 
 export default {
-  name: "Placements",
+  name: "ListOfPlacements",
 
   data: () => ({
       placements:[],
@@ -36,7 +52,16 @@ export default {
   },
   created(){
 
-      axios.get('/api/placements/')
+      axios.get('/api/company/'+this.$route.params.id)
+      .then(response=>{
+          this.company = response.data;
+          console.log(this.company);
+      })
+      .catch(error =>{
+          console.log(error);
+      })
+
+      axios.get('/api/placements/placements/'+this.$route.params.id)
       .then(response=>{
           this.placements = response.data;
           console.log(this.placements);
@@ -45,6 +70,10 @@ export default {
           console.log(error);
       })
   },
+  components:{
+      AddPlacementDetails: () => import('@/components/studentDashboard/placements/addPlacementDetails'),
+      //AddDatasnapshot: () => import('@/components/studentDashboard/placements/addDatasnapshot'),
+  }
 };
 </script>
 

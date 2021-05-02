@@ -43,6 +43,7 @@ export default new Router({
             // redirect :'dashboard/basic-dashboard',
             beforeEnter: (to, from, next) => {
                 let access_token = window.$cookies.get("jwt");
+
                 if (access_token != null) {
                     next();
                 } else {
@@ -58,8 +59,8 @@ export default new Router({
                 },
 
                 {
-                    name: 'Alerts',
-                    path: '/dashboard/alerts',
+                    name: 'Placements',
+                    path: '/dashboard/Placements',
                     component: () => import('@/views/pages/Alerts'),
                 },
 
@@ -92,6 +93,29 @@ export default new Router({
                     path: '/dashboard/calendar',
                     component: () => import('@/views/pages/Calendar'),
                 },
+
+                {
+                    name: 'Company',
+                    path: '/dashboard/company',
+                    component: () => import('@/views/pages/Company'),
+                },
+                {
+                    name: 'CompanyDetails',
+                    path: '/dashboard/companies/:id',
+                    component: () => import('@/components/studentDashboard/placements/listPlacements'),
+                },
+
+                {
+                    name: 'Placement',
+                    path: '/dashboard/placements/:id',
+                    component: () => import('@/components/studentDashboard/placements/displayPlacement'),
+                },
+
+                // {
+                //     name: 'Snap',
+                //     path: '/dashboard/snaps',
+                //     component: () => import('@/components/studentDashboard/placements/displayDatasnapshots'),
+                // },
             ]
         },
     ],

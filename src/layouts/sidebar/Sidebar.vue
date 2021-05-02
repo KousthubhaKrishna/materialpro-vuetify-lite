@@ -73,7 +73,7 @@ export default {
       {
         title: "Placements",
         icon: "mdi-account-tie",
-        to: "/dashboard/alerts"
+        to: "/dashboard/placements"
       },
 
       {
@@ -92,6 +92,11 @@ export default {
         title: "E-resources",
         icon: "mdi-book",
         to: "/dashboard/icons"
+      },
+      {
+        title: "Company",
+        icon: "mdi-book",
+        to: "/dashboard/company"
       }
     ]
   }),
