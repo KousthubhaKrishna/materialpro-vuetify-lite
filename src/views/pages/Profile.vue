@@ -505,6 +505,55 @@ export default {
       },
     },
   methods: {
+    initialize() {
+          const access_token = window.$cookies.get("jwt");
+    let tokens = JSON.parse(atob(access_token.split(".")[1]));
+    this.role = tokens.role;
+        this.$axios.get('/api/students/myProfile')
+        .then( response => {
+            this.posts = response.data;
+            if(this.posts==null){
+              this.disabled = false
+            }
+            else {
+            this.studentData = response.data;
+            this.is_verified = response.data.is_verified;
+            this.first_name = response.data.basic_info.first_name;
+            this.last_name = response.data.basic_info.last_name;
+            this.full_name = response.data.basic_info.full_name;
+            this.roll_number = response.data.basic_info.roll_number;
+            this.branch = response.data.basic_info.branch;
+            this.section = response.data.basic_info.section;
+            this.placement_batch = response.data.basic_info.placement_batch;
+            this.primary_email = response.data.contact_info.primary_email;
+            this.secondary_email = response.data.contact_info.secondary_email;
+            this.mobile = response.data.contact_info.mobile;
+            this.secondary_mobile = response.data.contact_info.secondary_mobile;
+            this.cgpa = response.data.education.cgpa;
+            this.backlogs = response.data.education.backlogs;
+            this.inter_or_diploma_college = response.data.education.inter_or_diploma_college;
+            this.inter_or_diploma_percentage = response.data.education.inter_or_diploma_percentage;
+            this.school = response.data.education.school;
+            this.school_percentage = response.data.education.school_percentage;
+            this.eamcet_rank = response.data.education.eamcet_rank;
+            this.jee_rank = response.data.education.jee_rank;
+            this.parent_name = response.data.personal_info.parent_name;
+            this.address = response.data.personal_info.address;
+            this.city = response.data.personal_info.city;
+            this.state = response.data.personal_info.state;
+            this.zipcode = response.data.personal_info.zipcode;
+            this.gender = response.data.personal_info.gender;
+            this.date_of_birth = response.data.personal_info.date_of_birth;
+            this.photo_url = response.data.photo_url;
+            this.resume_url = response.data.resume_url;
+
+            console.log(response.data);
+            }
+        })
+        .catch(error =>{
+            console.log(error)
+        });
+    },
     save (date) {
         this.$refs.menu.save(date)
         console.log(this.date_of_birth);
@@ -585,15 +634,16 @@ export default {
               this.snackbar.type = "green";
               this.snackbar.text = "Updated your profile";
               this.snackbar.show = true;
-              this.updateCurrentStudentInfo();
+              // this.updateCurrentStudentInfo();
+              this.initialize();
           })
           .catch(error =>{
               console.log(error)
           })
       }
-      else{
-        console.log("PATCHING");
+      else {
         this.$axios.patch('/api/students',{
+            is_verified: this.checkVerification(),
             first_name : this.first_name,
             last_name : this.last_name,
             full_name : this.full_name,
@@ -633,7 +683,8 @@ export default {
                 this.snackbar.text = "Updated your profile";
               }
               this.snackbar.show = true;
-              this.updateCurrentStudentInfo();
+              //this.updateCurrentStudentInfo();
+              this.initialize();
           })
           .catch(error =>{
               console.log(error);
@@ -644,7 +695,6 @@ export default {
       }
     },
     checkVerification() {
-      console.log("CHECK VERFICATION");
       var fetched_basic_info  = {
         ...this.studentData.basic_info,
         cgpa : this.studentData.education.cgpa,
@@ -666,55 +716,8 @@ export default {
     }
   },
   created() {
-    const access_token = window.$cookies.get("jwt");
-    let tokens = JSON.parse(atob(access_token.split(".")[1]));
-    this.role = tokens.role;
-        this.$axios.get('/api/students/myProfile')
-        .then( response => {
-            this.posts = response.data;
-            if(this.posts==null){
-              this.disabled = false
-            }
-            else {
-            this.studentData = response.data;
-            console.log(this.studentData);
-            this.is_verified = response.data.is_verified;
-            this.first_name = response.data.basic_info.first_name;
-            this.last_name = response.data.basic_info.last_name;
-            this.full_name = response.data.basic_info.full_name;
-            this.roll_number = response.data.basic_info.roll_number;
-            this.branch = response.data.basic_info.branch;
-            this.section = response.data.basic_info.section;
-            this.placement_batch = response.data.basic_info.placement_batch;
-            this.primary_email = response.data.contact_info.primary_email;
-            this.secondary_email = response.data.contact_info.secondary_email;
-            this.mobile = response.data.contact_info.mobile;
-            this.secondary_mobile = response.data.contact_info.secondary_mobile;
-            this.cgpa = response.data.education.cgpa;
-            this.backlogs = response.data.education.backlogs;
-            this.inter_or_diploma_college = response.data.education.inter_or_diploma_college;
-            this.inter_or_diploma_percentage = response.data.education.inter_or_diploma_percentage;
-            this.school = response.data.education.school;
-            this.school_percentage = response.data.education.school_percentage;
-            this.eamcet_rank = response.data.education.eamcet_rank;
-            this.jee_rank = response.data.education.jee_rank;
-            this.parent_name = response.data.personal_info.parent_name;
-            this.address = response.data.personal_info.address;
-            this.city = response.data.personal_info.city;
-            this.state = response.data.personal_info.state;
-            this.zipcode = response.data.personal_info.zipcode;
-            this.gender = response.data.personal_info.gender;
-            this.date_of_birth = response.data.personal_info.date_of_birth;
-            this.photo_url = response.data.photo_url;
-            this.resume_url = response.data.resume_url;
-
-            console.log(response.data);
-            }
-        })
-        .catch(error =>{
-            console.log(error)
-        })
-    },
+    this.initialize();
+  },
 };
 </script>
 

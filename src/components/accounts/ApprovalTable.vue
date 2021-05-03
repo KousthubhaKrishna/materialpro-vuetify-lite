@@ -201,6 +201,7 @@
             this.snackbar.text = "Approved "+student.basic_info.full_name;
             this.snackbar.type = "success";
             this.snackbar.show = true;
+            this.initialize();
           }
         })
         .catch(error =>{

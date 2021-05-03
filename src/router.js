@@ -28,7 +28,14 @@ export default new Router({
                     // user has access token, user can open the page
                     next({ name: "Dashboard" });
                 }
-            }
+            },
+            children: [
+                {
+                    path: "/login/:email/:token",
+                    component: () => import('@/components/LoginBox'),
+                    props: { default: true }
+                }
+            ]
         },
         {
             path: '/dashboard',

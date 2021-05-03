@@ -2,11 +2,9 @@
   <v-app id="inspire">
     <Header v-model="expandOnHover"></Header>
     <Sidebar :expand-on-hover.sync="expandOnHover"></Sidebar>
-    <v-main>
-      <v-container class="fill-height" fluid>
-        <router-view ></router-view>
-      </v-container>
-    </v-main>
+    <v-content>
+    <router-view ></router-view>
+    </v-content>
 
     <!-- <Footer></Footer> -->
   </v-app>

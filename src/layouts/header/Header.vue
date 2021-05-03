@@ -1,13 +1,14 @@
 <template>
   <v-app-bar app clipped-left clipped-right color="primary" dark>
-    <v-toolbar-title class="align-center d-flex">
-      <span class="logo-icon">
-        <img src="../../assets/logo-light-icon.png" />
-      </span>
-      <span class="logo-text ml-2">
-        <img src="../../assets/logo-light-text.png" class="mt-2" />
-      </span>
-    </v-toolbar-title>
+    <v-img
+      alt="CBIT Logo"
+      class="shrink mx-4"
+      contain
+      src="@/assets/images/cbit_logo.png"
+      height="40"
+      width="40"
+    />
+    <v-toolbar-title>CDC - CBIT</v-toolbar-title>
     <v-app-bar-nav-icon
       class="d-block d-mdi-none"
       @click="$vuetify.breakpoint.smAndDown ? setSidebarDrawer(!Sidebar_drawer) : $emit('input', !value)"

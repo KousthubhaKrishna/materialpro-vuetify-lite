@@ -113,11 +113,6 @@
           user_email: "",
         },
         fields: [
-          {
-            text: 'Roll Number',
-            align: 'start',
-            value: 'roll_number'
-          },
           { text: 'Email', value: 'user_email'},
           { text: 'Actions', value: 'action', sortable: false },
         ],

@@ -120,7 +120,7 @@ export default {
         },
         {
           title: "Company",
-          icon: "mdi-book",
+          icon: "mdi-office-building",
           to: "/dashboard/company"
         },
         {
