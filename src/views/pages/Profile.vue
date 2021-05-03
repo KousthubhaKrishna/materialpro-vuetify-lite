@@ -677,6 +677,7 @@ export default {
             }
             else {
             this.studentData = response.data;
+            console.log(this.studentData);
             this.is_verified = response.data.is_verified;
             this.first_name = response.data.basic_info.first_name;
             this.last_name = response.data.basic_info.last_name;

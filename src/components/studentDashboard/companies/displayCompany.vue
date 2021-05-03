@@ -2,7 +2,7 @@
     <v-container fluid class="pa-10">
 
          <v-row>
-          <v-col cols="12" v-for="company in companies" :key="company._id" sm="3">
+          <v-col cols="12" v-for="(company,index) in companies" :key="index" sm="3">
 
                <v-card outlined @click="openPlacements(company._id)">
             <v-img
@@ -14,6 +14,24 @@
             >
             </v-img>
             <v-card-title v-text="company.company_name"></v-card-title>
+
+
+            <v-card-actions>
+
+            <EditCompany :company = "company"></EditCompany>
+            
+            <v-btn
+              color="red"
+              depressed
+              @click="deleteCompany(company._id)"
+            >
+              <v-icon left>
+                mdi-delete
+              </v-icon>
+              Delete
+            </v-btn>
+            </v-card-actions>
+
           </v-card>
                 
           </v-col>
@@ -23,6 +41,7 @@
 
 <script>
 import axios from 'axios';
+import { EventBus } from '@/event-bus.js'
 
 export default {
     name: "DisplayCompanies",
@@ -36,10 +55,10 @@ export default {
             name: 'CompanyDetails',
             params: { id: data }
         });
-      }
-  },
-  created(){
-      axios.get('/api/company')
+      },
+
+      getCompanies(){
+        axios.get('/api/company')
       .then(response=>{
           this.companies = response.data;
           console.log(this.companies);
@@ -47,6 +66,33 @@ export default {
       .catch(error =>{
           console.log(error);
       })
+      },
+
+      deleteCompany(data){
+        axios.delete('/api/company/'+data)
+        .then(response=>{
+            console.log(response.data);
+            this.getCompanies();
+        })
+        .catch(error =>{
+            console.log(error);
+        })
+      },
+
+     
+
   },
+  created(){
+      this.getCompanies();
+
+      EventBus.$on('companies', (value) => {
+          this.companies.push(value)
+        });
+
+  },
+
+  components:{
+      EditCompany: () => import('@/components/studentDashboard/companies/editCompany'),
+  }
   }
 </script>

@@ -2,7 +2,7 @@
   <v-container fluid class="down-top-padding">
 
       
-      <AddCompany></AddCompany>
+      <AddCompany v-if="permission"></AddCompany>
       <DisplayCompany></DisplayCompany>
 
     
@@ -10,7 +10,6 @@
 </template>
 
 <script>
-import axios from 'axios'
 
 // create a datasnapshot as soon as the creating a new placement
 // while displaying placements when clicked on register, had to update the datasnapshot
@@ -20,9 +19,21 @@ export default {
 
   data: () => ({
       placements:[],
+      permission:false,
+      user:"",
   }),
   created(){
-      
+      const access_token = window.$cookies.get("jwt");
+      let tokens = JSON.parse(atob(access_token.split(".")[1]));
+      this.user = tokens;
+
+      console.log(this.user);
+
+
+    if(this.$PERMISSIONS.MED){
+      console.log("coordinator");
+      this.permission = true;
+    }
   },
   components:{
       AddCompany: () => import('@/components/studentDashboard/companies/addCompany'),

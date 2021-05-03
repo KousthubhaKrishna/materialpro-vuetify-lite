@@ -24,7 +24,7 @@
 
             <v-card-actions>
             <!-- <v-btn color="primary" v-if="snaps.length>0" @click="register">register</v-btn> -->
-            <Register :snap="firstSnap"></Register>
+            <Register></Register>
             </v-card-actions>
             </v-card>
 
@@ -85,7 +85,7 @@
                                   <v-col cols="12" class="pa-0">
                                     <v-select 
                                     :items="type" 
-                                    label="Type of Announcement"  
+                                    label="Type of Announcement*"  
                                     :rules="[value => !!value || '']"
                                     v-model="announcement.type">
                                     </v-select>
@@ -149,12 +149,12 @@ import axios from 'axios'
       placement:[],
       snaps:[],
       snapId:"",
-      firstSnap:"",
+      // firstSnap:"",
       announcement:{
         message:"",  
         type: "",     
       },
-      type : ["Message","Pre-placement Talk","Test"],
+      type : ["Message","Meeting","Pre-placement Talk","Test"],
       announcements:"",
       dialog:false,
       error:"",
@@ -209,19 +209,6 @@ import axios from 'axios'
         openSnap(data){
           this.snapId = data;
           this.disable = true;
-        },
-
-        register(){
-          // use select command in db
-
-          axios.get(''+this.$route.params.id)
-            .then(response =>{
-              console.log(" message submittted",response.data)
-                })
-              .catch(error =>{
-                  console.log(error)
-              })
-
         },
 
         deleteMessage(data){

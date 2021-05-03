@@ -12,7 +12,7 @@
           v-bind="attrs"
           v-on="on"
         >
-          Add New Company
+          Edit
         </v-btn>
       </template>
       <v-card>  
@@ -36,7 +36,7 @@
                 <v-text-field
                   ref="company_id"
                   label="Company ID*"
-                  v-model="companyData.companyId"
+                  v-model="companyData.company_id"
                   :rules="[rules.required]"
                 ></v-text-field>
               </v-col>
@@ -89,7 +89,7 @@
           <v-btn
             color="blue darken-1"
             text
-            @click="submitCompany"
+            @click="editCompany"
           >
             Save
           </v-btn>
@@ -106,10 +106,13 @@ import axios from 'axios';
 import { EventBus } from '@/event-bus.js'
 
 export default {
+    props:['company'],
+
     data: () => ({
       dialog: false,
+      id:"",
       companyData:{
-          companyId:"",
+          company_id:"",
           company_name:"",
           photo_url:"",
           description:""
@@ -119,7 +122,18 @@ export default {
           required: value => !!value || " ",
       },
     }),
+    created(){
+        console.log(this.company);
+        this.intialise();
+    },
     methods:{
+        intialise(){
+            this.id = this.company._id;
+            this.companyData.companyId = this.company.company_id;
+            this.companyData.company_name = this.company.company_name;
+            this.companyData.photo_url = this.company.photo_url;
+            this.companyData.description = this.company.description;
+        },
 
         closeDialog(){
           this.dialog = false; 
@@ -127,25 +141,36 @@ export default {
           this.$refs.form.reset();
         },
 
-        submitCompany(){
-            let isValid = this.$refs.form.validate(true);
+        openPlacements(data){
+          this.$router.push({
+            name: 'CompanyDetails',
+            params: { id: data }
+        });
+      },
+
+    editCompany(){
+
+        let isValid = this.$refs.form.validate(true);
             console.log(isValid);
             if(isValid){
                 this.dialog = false;
-                axios.post('/api/company',this.companyData)
-                .then(response =>{
-                console.log("form submission",response.data)
-                // this.$router.push({ name: "Company" });
-                EventBus.$emit('companies', response.data);
+                axios.patch('/api/company/'+this.id, this.companyData)
+                .then(response=>{
+                    console.log(response.data);
+                    EventBus.$emit('company', response.data);
+                    this.openPlacements(this.id);
                 })
                 .catch(error =>{
-                    console.log(error)
+                    console.log(error);
                 })
             }
             else{
               this.error = "Fill all the required Fields";
             } 
-        }
+        
+      },
+
+        
     }
   }
 </script>
