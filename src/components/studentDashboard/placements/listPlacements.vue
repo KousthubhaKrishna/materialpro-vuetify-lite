@@ -10,7 +10,7 @@
       </v-card>
 
       <v-row><v-col>
-      <AddPlacementDetails></AddPlacementDetails>
+      <AddPlacementDetails v-if="$PERMISSIONS.MED.has(user.role)"></AddPlacementDetails>
       </v-col>
       </v-row>
      
@@ -51,6 +51,10 @@ export default {
       }
   },
   created(){
+
+      const access_token = window.$cookies.get("jwt");
+      let tokens = JSON.parse(atob(access_token.split(".")[1]));
+      this.user = tokens;
 
       axios.get('/api/company/'+this.$route.params.id)
       .then(response=>{

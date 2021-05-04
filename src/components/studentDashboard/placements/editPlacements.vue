@@ -12,7 +12,7 @@
           v-bind="attrs"
           v-on="on"
         >
-          Add Placement
+          Edit Placement
         </v-btn>
       </template>
 
@@ -78,7 +78,7 @@
               <v-col cols="12" sm="6">
                 <v-text-field
                   label="cgpa Criteria*"
-                  v-model="placementData.cgpa"
+                  v-model="placementData.eligibility.cgpa"
                   :rules="[rules.required, rules.number]"
                 ></v-text-field>
               </v-col>
@@ -88,7 +88,7 @@
               >
                 <v-text-field
                   label="Backlogs*"
-                  v-model="placementData.backlogs"
+                  v-model="placementData.eligibility.backlogs"
                   :rules="[rules.required, rules.number]"
                 ></v-text-field>
               </v-col>
@@ -100,7 +100,7 @@
                 <v-autocomplete
                   :items="['Civil', 'CSE', 'ECE', 'IT', 'EEE', 'Mech', 'Bio-tech', 'Chem', 'M-Tech','all']"
                   label="Branches"
-                  v-model="placementData.branches"
+                  v-model="placementData.eligibility.branches"
                   :rules="[rules.required]"
                   multiple
                 ></v-autocomplete>
@@ -126,7 +126,7 @@
           <v-btn
             color="blue darken-1"
             text
-            @click="addPlacement"
+            @click="editPlacement"
           >
             Save
           </v-btn>
@@ -139,9 +139,12 @@
 
 <script>
 import axios from 'axios';
+import { EventBus } from '@/event-bus.js'
 
   export default {
-    name: "AddPlacementDetails",
+    name: "EditPlacementDetails",
+    props:['placement'],
+
    data: () => ({
       dialog: false,
       placementData:{
@@ -150,11 +153,12 @@ import axios from 'axios';
           package:"",
           drive_details:"",
           placement_batch:"",
+          posted_date:"",
+          eligibility:{
           cgpa:"",
           backlogs:"",
-          posted_date:"",
           branches:[],
-          message:"A new placement is created"
+          },
       },
       error:"",
       rules:{
@@ -163,26 +167,34 @@ import axios from 'axios';
       },
     }),
     created(){
-
+        this.getPlacement();
     },
     methods:{
-
         closeDialog(){
           this.dialog = false; 
           this.error="";
-          this.$refs.form.reset();
         },
 
-        addPlacement(){
+        getPlacement(){
+            axios.get('/api/placements/'+this.$route.params.id )
+                .then(response =>{
+                    this.placementData = response.data;
+                })
+                .catch(error =>{
+                    console.log(error)
+                })
+        },
+
+        editPlacement(){
             let isValid = this.$refs.form.validate(true);
             console.log(isValid);
             if(isValid){
-                this.dialog = false;
+                this.closeDialog();
                 this.placementData.posted_date = new Date().toISOString();
-                axios.post('/api/placements/'+this.$route.params.id ,this.placementData)
+                axios.patch('/api/placements/'+this.$route.params.id ,this.placementData)
                 .then(response =>{
-                console.log("form submission",response.data);
-                this.$router.push({name: 'Placement',params: { id: response.data._id }});
+                EventBus.$emit('placement', this.placementData);
+
                 })
                 .catch(error =>{
                     console.log(error)

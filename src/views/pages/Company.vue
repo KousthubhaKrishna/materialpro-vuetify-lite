@@ -2,7 +2,7 @@
   <v-container fluid class="down-top-padding">
 
       
-      <AddCompany v-if="permission"></AddCompany>
+      <AddCompany v-if="$PERMISSIONS.MED.has(user.role)"></AddCompany>
       <DisplayCompany></DisplayCompany>
 
     
@@ -10,9 +10,6 @@
 </template>
 
 <script>
-
-// create a datasnapshot as soon as the creating a new placement
-// while displaying placements when clicked on register, had to update the datasnapshot
 
 export default {
   name: "Company",
@@ -26,14 +23,6 @@ export default {
       const access_token = window.$cookies.get("jwt");
       let tokens = JSON.parse(atob(access_token.split(".")[1]));
       this.user = tokens;
-
-      console.log(this.user);
-
-
-    if(this.$PERMISSIONS.MED){
-      console.log("coordinator");
-      this.permission = true;
-    }
   },
   components:{
       AddCompany: () => import('@/components/studentDashboard/companies/addCompany'),

@@ -16,7 +16,7 @@
             <v-card-title v-text="company.company_name"></v-card-title>
 
 
-            <v-card-actions>
+            <v-card-actions v-if="$PERMISSIONS.MED.has(user.role)">
 
             <EditCompany :company = "company"></EditCompany>
             
@@ -48,6 +48,7 @@ export default {
 
     data: () => ({
       companies:[],
+      user:"",
   }),
   methods:{
       openPlacements(data){
@@ -83,6 +84,11 @@ export default {
 
   },
   created(){
+
+      const access_token = window.$cookies.get("jwt");
+      let tokens = JSON.parse(atob(access_token.split(".")[1]));
+      this.user = tokens;
+
       this.getCompanies();
 
       EventBus.$on('companies', (value) => {

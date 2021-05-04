@@ -96,9 +96,14 @@
 
               
               <v-col cols="12">
+                <p>
+                  {{enteredFields}}
+                </p>
+
                 <v-text-field
                   label="Extra Fields"
-                  v-model="snapData.extra_fields"
+                  v-model="extra_field"
+                  @keypress.enter="enter"
                 ></v-text-field>
               </v-col>
 
@@ -146,7 +151,7 @@ import axios from 'axios';
       items: ["First Name","Last Name","Full Name","Roll Number","Branch","Section","Placement Batch",
               "Primary Email","Secondary Email","Mobile","Secondary Mobile","CGPA","Backlogs","College",
               "Inter Percent","School","School percent","Eamcet Rank","Jee Mains Rank",
-              "Parent Name","Address","City","State","Zipcode","Gender","Date of Birth"],
+              "Parent Name","Address","City","State","Zipcode","Gender","Date of Birth","Photo Url","Resume Url"],
       snapData:{
           snap_name : "",
           type_of_data:"",
@@ -156,14 +161,29 @@ import axios from 'axios';
           last_date:"",
           isFirst:"",
       },
+      extra_fields:[],
+      extra_field: null,
+      entered:[],
       error:"",
       rules:{
           required: value => !!value || " ",
           number: v => /^\d+$/.test(v)||'This field only accept numbers',
       },
     }),
+
+    computed:{
+      enteredFields(){
+        return this.entered.concat(this.extra_field||[]);
+      }
+    },
    
     methods:{
+
+      enter(){
+        this.extra_fields.push(this.extra_field);
+        this.entered.push(this.extra_field);
+        this.extra_field = '';
+      },
 
         save (date) {
         this.$refs.menu.save(date)
@@ -184,6 +204,7 @@ import axios from 'axios';
                 this.dialog = false;
                 // this.snapData.last_date = this.$refs.last_date.toISOString();
                 this.snapData.isFirst = this.first;
+                this.snapData.extra_fields = this.extra_fields;
                 axios.post('/api/snaps/'+this.$route.params.id, this.snapData)
                 .then(response =>{
                 console.log("form submission",response.data);

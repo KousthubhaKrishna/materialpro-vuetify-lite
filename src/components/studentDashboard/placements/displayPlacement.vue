@@ -4,6 +4,19 @@
              <v-card-title>
                {{ placement.company_id.company_name }}
              </v-card-title>
+
+             <EditPlacement :placement = "placement" v-if="$PERMISSIONS.MED.has(user.role)"></EditPlacement>
+             <v-btn
+              color="red"
+              depressed
+              @click="deletePlacement"
+              v-if="$PERMISSIONS.MED.has(user.role)"
+            >
+              <v-icon left>
+                mdi-delete
+              </v-icon>
+              Delete
+            </v-btn>
                
             <v-card-text>
               {{ placement.job_type }}<br/>
@@ -23,8 +36,7 @@
             </v-card-text>
 
             <v-card-actions>
-            <!-- <v-btn color="primary" v-if="snaps.length>0" @click="register">register</v-btn> -->
-            <Register></Register>
+            <Register v-if="$ROLES.STUDENT == user.role || user.role == $ROLES.PC"></Register>
             </v-card-actions>
             </v-card>
 
@@ -34,10 +46,11 @@
                   <v-card-title>Announcements</v-card-title>
                   <v-card-text>
                     <p v-for="(ann,index) in announcements" :key="index">
+                      {{ann.title}}
                       {{ann.message}}
-                      {{ ann.type }}
+                      {{ann.type}}
                       {{ann.date}}
-                      <v-btn><v-icon @click="deleteMessage(ann._id)">mdi-delete</v-icon></v-btn>
+                      <v-btn v-if="$PERMISSIONS.MED.has(user.role)"><v-icon @click="deleteMessage(ann._id)">mdi-delete</v-icon></v-btn>
                     </p>
                   </v-card-text>
                   <v-card-actions>
@@ -46,7 +59,8 @@
                      <v-dialog
                         v-model="dialog"
                         persistent
-                        max-width="500px"
+                        max-width="500px" 
+                        v-if="$PERMISSIONS.MED.has(user.role)"
                       >
                         <template v-slot:activator="{ on, attrs }">
                             <v-icon 
@@ -69,7 +83,18 @@
                               </v-alert>
 
                               <v-row>
-                                
+                                <v-col
+                                cols="12"
+                                sm="5"
+                                class="pa-1"
+                              >
+                                <v-text-field
+
+                                  label="Title*"
+                                  v-model="announcement.title"
+                                  :rules="[value => !!value || '']"
+                                ></v-text-field>
+                              </v-col>
                                 <v-col cols="12" class="pa-0">
                                     <v-textarea
                                       ref="description"
@@ -90,6 +115,36 @@
                                     v-model="announcement.type">
                                     </v-select>
                                   </v-col>
+
+                                  <v-col
+                                    cols="12"
+                                    sm="6"
+                                  >
+                                  <v-menu
+                                      ref="menu"
+                                      v-model="menu"
+                                      :close-on-content-click="false"
+                                      transition="scale-transition"
+                                      offset-y
+                                      min-width="auto"
+                                    >
+                                      <template v-slot:activator="{ on, attrs }">
+                                        <v-text-field
+                                          v-model="announcement.date"
+                                          label="Date of event"
+                                          readonly
+                                          v-bind="attrs"
+                                          v-on="on"
+                                        ></v-text-field>
+                                      </template>
+                                      <v-date-picker
+                                        ref="picker"
+                                        v-model="announcement.date"
+                                        @change="save"
+                                      ></v-date-picker>
+                                    </v-menu>
+                                  </v-col>
+
                                   
                               </v-row>
                             </v-container>
@@ -122,7 +177,7 @@
 
 
               <v-col col="12" sm="4">
-                <AddDatasnapshot :first="isFirst"></AddDatasnapshot>
+                <AddDatasnapshot :first="isFirst" v-if="$PERMISSIONS.MED.has(user.role)"></AddDatasnapshot>
 
                 <v-row v-for="(snap,index) in snaps" :key="index">
                   <v-card elevation="1" outlined @click="openSnap(snap._id)">
@@ -134,38 +189,61 @@
               </v-col>
             </v-row>
 
-          <DisplayDatasnapshot v-if="disable" :id="snapId"></DisplayDatasnapshot>
+          <DisplayDatasnapshot v-if="$PERMISSIONS.MED.has(user.role) && disable" :snapId="snapId" ></DisplayDatasnapshot>
 
 </v-container>
 </template>
 
 <script>
 import axios from 'axios'
+import { EventBus } from '@/event-bus.js'
 
   export default {
     name: "DisplayPlacement",
 
     data: () => ({
-      placement:[],
-      snaps:[],
+       placement:{
+          job_type:"",
+          job_description:"",
+          package:"",
+          drive_details:"",
+          placement_batch:"",
+          posted_date:"",
+          eligibility:{
+          cgpa:"",
+          backlogs:"",
+          branches:[],
+          },
+      },
+      company_id:"",
+      snaps:{},
       snapId:"",
-      // firstSnap:"",
       announcement:{
-        message:"",  
-        type: "",     
+        title:"",
+        message:"",
+        date:"",  
+        type: "",
       },
       type : ["Message","Meeting","Pre-placement Talk","Test"],
       announcements:"",
       dialog:false,
+      menu: false,
       error:"",
       disable:false,
       isFirst: false,
+      user: "",
+      snapsLength:"",
     }),
     created(){
+
+      const access_token = window.$cookies.get("jwt");
+      let tokens = JSON.parse(atob(access_token.split(".")[1]));
+      this.user = tokens;
       
       axios.get('/api/placements/'+this.$route.params.id)
       .then(response=>{
           this.placement = response.data;
+          this.company_id = response.data.company_id;
           this.firstSnap = this.placement.register_snap;
       })
       .catch(error =>{
@@ -173,6 +251,8 @@ import axios from 'axios'
       })
 
       this.getAnnouncements();
+
+      if(this.$PERMISSIONS.MED.has(this.user.role)){
       
       axios.get('/api/snaps/placement_snaps/'+this.$route.params.id)
       .then(response=>{
@@ -186,14 +266,26 @@ import axios from 'axios'
       .catch(error =>{
           console.log(error);
       })
+      }
 
     },
+    mounted(){
+      EventBus.$on('placement', (value) => {
+        console.log(value);
+          this.placement = value 
+        });
+    },
      methods:{
+
+        save (date) {
+        this.$refs.menu.save(date)
+      },
 
        getAnnouncements(){
           axios.get('/api/announcements/'+this.$route.params.id)
           .then(response=>{
               this.announcements = response.data;
+              console.log(this.announcements)
           })
           .catch(error =>{
               console.log(error);
@@ -240,12 +332,29 @@ import axios from 'axios'
             else{
               this.error = "Fill all the required Fields";
             } 
+        },
+
+        deletePlacement(){
+          console.log(this.company_id)
+          axios.delete('/api/placements/'+this.$route.params.id)
+            .then(response =>{
+              console.log(" deleted succesfully",response.data)
+              console.log(this.company_id)
+              this.$router.push({
+                name: 'CompanyDetails',
+                params: { id: this.company_id }
+            });
+                })
+              .catch(error =>{
+                  console.log(error)
+              })
         }
     },
     components:{
       AddDatasnapshot: () => import('@/components/studentDashboard/placements/addDatasnapshot'),
       DisplayDatasnapshot: () => import('@/components/studentDashboard/placements/displayDatasnapshots'),
       Register: () => import('@/components/studentDashboard/placements/register'),
+      EditPlacement: () => import('@/components/studentDashboard/placements/editPlacements'),
     }
   }
 </script>

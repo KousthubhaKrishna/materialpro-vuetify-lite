@@ -25,15 +25,18 @@
             <v-row >
               <v-col cols="12" v-for="(field,index) in snapData.fields" :key="index">
                 <v-text-field
-                v-model="$data[getField(field)]"
+                v-model="fields_set[field]"
                 :label="field"
-
+                :rules="[rules.required]"
+                disabled
                 ></v-text-field>
               </v-col>
-              <v-col cols="12" v-for="(field,index) in snapData.extra_fields" :key="index">
+
+              <v-col cols="12" v-for="(k, index) in snapData.extra_fields" :key="index">
                 <v-text-field
-                :ref = "getField(field)"
-                :label="field"
+                :label="k"
+                v-model = "extra_fields[k]"
+                :rules="[rules.required]"
                 ></v-text-field>
               </v-col>
             </v-row>
@@ -75,41 +78,13 @@ import axios from 'axios';
    
    data: () => ({
       dialog: false,
+      isActive:true,
       menu: false,
-      // studentData:"",
       snapData:"",
-
-
-      first_name: "",
-      last_name: "",
-      full_name: "",
-      roll_number: "",
-      section: "",
-      placement_batch: "",
-      primary_email: "",
-      secondary_email: "",
-      mobile:"",
-      secondary_mobile:"",
-      cgpa:"",
-      backlogs:"",
-      inter_or_diploma_college:"",
-      inter_or_diploma_percentage:"",
-      school:"",
-      school_percentage:"",
-      eamcet_rank:"",
-      jee_rank:"",
-      parent_name:"",
-      address:"",
-      city:"",
-      state:"",
-      zipcode:"",
-      date_of_birth:"",
-      photo_url: "",
-      resume_url: "",
-
-
-      extra_fields:[],
-
+      fields_set:{},
+      fields:{},
+      extra_fields:{},
+      user:{},
       error:"",
       rules:{
           required: value => !!value || " ",
@@ -118,50 +93,38 @@ import axios from 'axios';
     }),
 
    created(){        
-
-        axios.get('/api/students/myProfile')
-        .then( response =>{
-            // this.student = response.data;
-            // console.log("student", this.student);
-
-            this.first_name = response.data.basic_info.first_name;
-            this.last_name = response.data.basic_info.last_name;
-            this.full_name = response.data.basic_info.full_name;
-            this.roll_number = response.data.basic_info.roll_number;
-            this.branch = response.data.basic_info.branch;
-            this.section = response.data.basic_info.section;
-            this.placement_batch = response.data.basic_info.placement_batch;
-            this.primary_email = response.data.contact_info.primary_email;
-            this.secondary_email = response.data.contact_info.secondary_email;
-            this.mobile = response.data.contact_info.mobile;
-            this.secondary_mobile = response.data.contact_info.secondary_mobile;
-            this.cgpa = response.data.education.cgpa;
-            this.backlogs = response.data.education.backlogs;
-            this.inter_or_diploma_college = response.data.education.inter_or_diploma_college;
-            this.inter_or_diploma_percentage = response.data.education.inter_or_diploma_percentage;
-            this.school = response.data.education.school;
-            this.school_percentage = response.data.education.school_percentage;
-            this.eamcet_rank = response.data.education.eamcet_rank;
-            this.jee_rank = response.data.education.jee_rank;
-            this.parent_name = response.data.personal_info.parent_name;
-            this.address = response.data.personal_info.address;
-            this.city = response.data.personal_info.city;
-            this.state = response.data.personal_info.state;
-            this.zipcode = response.data.personal_info.zipcode;
-            this.gender = response.data.personal_info.gender;
-            this.date_of_birth = response.data.personal_info.date_of_birth;
-            this.photo_url = response.data.photo_url;
-            this.resume_url = response.data.resume_url;
-
-        })
-        .catch(error =>{
-            console.log(error)
-        })
-
+        const access_token = window.$cookies.get("jwt");
+        let tokens = JSON.parse(atob(access_token.split(".")[1]));
+        this.user = tokens;
+      
         this.getSnapData();
+        this.getStudentData();
+        
+        this.isAlreadyRegistered();
 
    },
     methods:{
+
+      initialiseFields(){
+        this.snapData.fields.forEach(element => {
+          this.fields[element]=this.fields_set[element];
+        });
+        console.log(this.fields);
+      },
+
+      initialiseExtraFields(){
+        this.snapData.extra_fields.forEach(element => {
+          this.extra_fields[element]="";
+        });
+        console.log(this.extra_fields)
+      },
+
+      isAlreadyRegistered(){
+        console.log(this.snapData.data['user_email'].has(this.user.user_email))
+        if(this.snapData.data['user_email'].has(this.user.user_email)){
+          this.isActive = false;
+        }
+      },
 
         save (date) {
         this.$refs.menu.save(date)
@@ -171,9 +134,6 @@ import axios from 'axios';
         closeDialog(){
           this.dialog = false; 
           this.error="";
-          this.$refs.form.reset();
-          
-        console.log(this.extra_fields);
         },
 
         getField(data){
@@ -185,9 +145,11 @@ import axios from 'axios';
 
           axios.get('/api/placements/register/'+this.$route.params.id)
             .then(response =>{
+              if(response.data == null){
+                this.isActive = false;
+              }
               this.snapData = response.data;
-              this.extra_fields = response.data.extra_fields;
-              console.log("snap",response.data)
+              this.initialiseExtraFields();
                 })
               .catch(error =>{
                   console.log(error)
@@ -195,47 +157,68 @@ import axios from 'axios';
               })
         },
 
+        getStudentData(){
+          axios.get('/api/students/myProfile')
+          .then( response =>{
+            this.fields_set["First Name"] = response.data.basic_info.first_name;
+            this.fields_set["Last Name"] = response.data.basic_info.last_name;
+            this.fields_set["Full Name"] = response.data.basic_info.full_name;
+            this.fields_set["Roll Number"] = response.data.basic_info.roll_number;
+            this.fields_set["Branch"] = response.data.basic_info.branch;
+            this.fields_set["Section"] = response.data.basic_info.section;
+            this.fields_set["Placement Batch"] = response.data.basic_info.placement_batch;
+            this.fields_set["Primary Email"] = response.data.contact_info.primary_email;
+            this.fields_set["Secondary Email"] = response.data.contact_info.secondary_email;
+            this.fields_set["Mobile"] = response.data.contact_info.mobile;
+            this.fields_set["Secondary Mobile"] = response.data.contact_info.secondary_mobile;
+            this.fields_set["CGPA"] = response.data.education.cgpa;
+            this.fields_set["Backlogs"] = response.data.education.backlogs;
+            this.fields_set["College"] = response.data.education.inter_or_diploma_college;
+            this.fields_set["Inter Percentage"] = response.data.education.inter_or_diploma_percentage;
+            this.fields_set["School"] = response.data.education.school;
+            this.fields_set["School Percentage"] = response.data.education.school_percentage;
+            this.fields_set["Eamcet Rank"] = response.data.education.eamcet_rank;
+            this.fields_set["Jee Mains Rank"] = response.data.education.jee_rank;
+            this.fields_set["Parent Name"] = response.data.personal_info.parent_name;
+            this.fields_set["Address"] = response.data.personal_info.address;
+            this.fields_set["City"] = response.data.personal_info.city;
+            this.fields_set["State"] = response.data.personal_info.state;
+            this.fields_set["Zipcode"] = response.data.personal_info.zipcode;
+            this.fields_set["Gender"] = response.data.personal_info.gender;
+            this.fields_set["Date of Birth"] = response.data.personal_info.date_of_birth;
+            this.fields_set["Photo Url"] = response.data.photo_url;
+            this.fields_set["Resume Url"] = response.data.resume_url;
+        })
+        .catch(error =>{
+            console.log(error)
+        })
+        },
+
 
         register(){
 
-          axios.get('api/students/student_data')
+          console.log(this.extra_fields);
+          this.initialiseFields();
 
-            // const student = {};
-
-            // this.extra_fields.forEach(element => {
-            //   this.extra_fields[element] = this.$refsgetField(this.extra_fields[element]);
-            // });
-
-            // this.snapData.fields.forEach(element => {
-
-              
-            // });
-
-            // console.log(this.extra_fields)
-
-            // let isValid = this.$refs.form.validate(true);
-            // console.log(isValid);
-            // if(isValid){
-            //     this.dialog = false;
-            //     // this.snapData.last_date = this.$refs.last_date.toISOString();
-            //     axios.patch('/api/snaps/add_data/'+this.$route.params.id, this.snapData)
-            //     .then(response =>{
-            //     console.log("registered successfully",response.data);
-            //     })
-            //     .catch(error =>{
-            //         console.log(error)
-            //     })
+          let isValid = this.$refs.form.validate(true);
+          console.log(isValid);
+          if(isValid){
+              this.dialog = false;
+              this.fields['user_email'] = this.user.user_email; 
+              axios.patch('/api/snaps/add_data/'+this.$route.params.id, {...this.fields,...this.extra_fields})
+              .then(response =>{
+              console.log("registered successfully",response.data);
+              })
+              .catch(error =>{
+                  console.log(error)
+              })
   
-            // }
-            // else{
-            //   this.error = "Fill all the required Fields";
-            // } 
+            }
+            else{
+              this.error = "Fill all the required Fields";
+            } 
         }
     }
-     // const access_token = window.$cookies.get("jwt");
-      // let tokens = JSON.parse(atob(access_token.split(".")[1]));
-      // this.user = tokens;
+
   }
 </script>
-
-     
