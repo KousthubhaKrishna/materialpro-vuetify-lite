@@ -39,6 +39,7 @@
             <v-icon
               small
               class="mr-2"
+
               @click="deleteCompany(company._id)"
             >
               mdi-delete

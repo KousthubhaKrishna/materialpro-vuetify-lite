@@ -61,7 +61,7 @@
                   <v-card-title>Announcements</v-card-title>
                   <v-card-text>
                     <p v-for="(ann,index) in announcements" :key="index">
-                    {{ann.title}}
+                      {{ann.title}}
                       {{ann.message}}
                       {{ann.type}}
                       {{ann.date}}
