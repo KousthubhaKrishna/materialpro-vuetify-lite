@@ -61,7 +61,7 @@ export default new Router({
                 {
                     name: 'Placements',
                     path: '/dashboard/Placements',
-                    component: () => import('@/views/pages/Alerts'),
+                    component: () => import('@/views/pages/Placements'),
                 },
 
                 {
@@ -71,9 +71,9 @@ export default new Router({
                 },
 
                 {
-                    name: 'Icons',
-                    path: '/dashboard/icons',
-                    component: () => import('@/views/pages/Icons'),
+                    name: 'Resources',
+                    path: '/dashboard/resources',
+                    component: () => import('@/views/pages/Resources'),
                 },
 
                 {

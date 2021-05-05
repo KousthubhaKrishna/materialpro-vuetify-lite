@@ -156,7 +156,6 @@ export default {
                 this.dialog = false;
                 axios.patch('/api/company/'+this.id, this.companyData)
                 .then(response=>{
-                    console.log(response.data);
                     EventBus.$emit('company', response.data);
                     this.openPlacements(this.id);
                 })

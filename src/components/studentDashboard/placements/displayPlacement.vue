@@ -46,7 +46,11 @@
                   <v-card-title>Announcements</v-card-title>
                   <v-card-text>
                     <p v-for="(ann,index) in announcements" :key="index">
+<<<<<<< HEAD
                       {{ann.title}}
+=======
+                    {{ann.title}}
+>>>>>>> 5091b4a (Added E Resources)
                       {{ann.message}}
                       {{ann.type}}
                       {{ann.date}}
@@ -99,7 +103,7 @@
                                     <v-textarea
                                       ref="description"
                                       name="input-7-1"
-                                      label="Message*"
+                                      label="Message"
                                       v-model="announcement.message"
                                       auto-grow
                                       :rules="[value => !!value || '']"

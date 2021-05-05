@@ -23,6 +23,10 @@ export default {
       const access_token = window.$cookies.get("jwt");
       let tokens = JSON.parse(atob(access_token.split(".")[1]));
       this.user = tokens;
+
+    if(this.$PERMISSIONS.MED){
+      this.permission = true;
+    }
   },
   components:{
       AddCompany: () => import('@/components/studentDashboard/companies/addCompany'),

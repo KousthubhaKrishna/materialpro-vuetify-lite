@@ -128,8 +128,10 @@ export default {
       selectedElement: null,
       selectedOpen: false,
       events: [],
+      fetchedEvents : [],
       colors: ['info', 'success', 'warning', 'error', 'indigo', 'pink', 'grey darken-1'],
       names: ['Meeting', 'Holiday', 'PTO', 'Travel', 'Event', 'Birthday', 'Conference', 'Party'],
+      eventTypes: { "Message":"info","Meeting":"success","Pre-placement Talk":"warning","Test":"indigo"}
   }),
   computed: {
       title () {
@@ -167,7 +169,14 @@ export default {
       },
     },
     mounted () {
-      this.$refs.calendar.checkChange()
+      this.$refs.calendar.checkChange();
+      this.$axios.get('/api/announcements/')
+        .then(res => {
+          this.fetchedEvents = res.data;
+        })
+        .catch(err => {
+          console.log(err);
+        });
     },
     methods: {
       viewDay ({ date }) {
@@ -203,9 +212,33 @@ export default {
         nativeEvent.stopPropagation()
       },
       updateRange ({ start, end }) {
-        const events = []
+        // const events = [
+        //   {
+        //     name: "name",
+        //     start: this.formatDate(new Date(), true),
+        //     end: this.formatDate(new Date(), false),
+        //     color: "info"
+        //   },
+        //   {
+        //     name: "Kousthu",
+        //     start: this.formatDate(new Date(), true),
+        //     end: this.formatDate(new Date(), false),
+        //     color: "success"
+        //   }
+        // ]
 
-        const min = new Date(`${start.date}T00:00:00`)
+        const events = [];
+        console.log(this.fetchedEvents);
+        for(let i = 0; i < this.fetchedEvents.length; i++) {
+          events.push({
+            name: this.fetchedEvents[i].title || "Name",
+            start: this.formatDate(new Date(this.fetchedEvents[i].posted_date),false),
+            end: this.formatDate(new Date(this.fetchedEvents[i].posted_date), false),
+            color: this.eventTypes[this.fetchedEvents[i].type]
+          })
+        }
+        console.log(events)
+        // const min = new Date(`${start.date}T00:00:00`)
         // const max = new Date(`${end.date}T23:59:59`)
         // const days = (max.getTime() - min.getTime()) / 86400000
         // const eventCount = this.rnd(days, days + 20)
@@ -224,12 +257,6 @@ export default {
         //     color: this.colors[this.rnd(0, this.colors.length - 1)],
         //   })
         // }
-        this.$axios.get('/api/placements')
-        .then(res => {
-        })
-        .catch(err => {
-          console.log(err);
-        });
 
         this.start = start
         this.end = end

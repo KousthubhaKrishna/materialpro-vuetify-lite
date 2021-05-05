@@ -10,7 +10,7 @@
           <v-card>
             <v-card-text class="text-center pa-7">
               <img
-                :src="photo_url || 'https://randomuser.me/api/portraits/men/81.jpg'"
+                :src="photo_url || 'https://upload.wikimedia.org/wikipedia/commons/2/29/Loader.gif'"
                 alt="user"
                 width="150px"
                 class="img-fluid rounded-circle shadow-sm"

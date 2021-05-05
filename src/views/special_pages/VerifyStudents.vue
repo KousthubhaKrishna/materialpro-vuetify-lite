@@ -1,12 +1,14 @@
 <template>
   <v-container fluid class="down-top-padding">
-    <v-row>
-      <v-col>
-        <h2>Add Student Accounts</h2>
+    <v-card class="mb-5">
+      <v-card-title>
+        <h3>Add Student Accounts</h3>
+      </v-card-title>
+      <v-card-text>
         <p> Check the details and criticial fields thoroughly and accordingly please approve student profiles. </p>
-    <ApprovalTable/>
-      </v-col>
-    </v-row>
+        <ApprovalTable/>
+      </v-card-text>
+      </v-card>
   </v-container>
 </template>
 

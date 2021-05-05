@@ -3,7 +3,7 @@
     <v-data-table
       :headers="fields"
       :items="displayData"
-      class="elevation-1"
+      class="elevation-4"
       >
       <template v-slot:top>
         <v-toolbar

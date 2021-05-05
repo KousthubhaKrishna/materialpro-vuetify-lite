@@ -91,7 +91,7 @@
             </v-col>
             <v-col align="right">
                 <v-btn v-if="(item.created_by && item.created_by._id == user._id)" color="primary" @click="editItem(item)"> <v-icon small> mdi-pencil </v-icon> </v-btn>
-                <v-btn v-if="$PERMISSIONS.MED.has(user.role) || (item.created_by && item.created_by._id == user._id)" @click="openDeleteDialog(item)" color="error" > <v-icon small> mdi-delete </v-icon> </v-btn>
+                <v-btn v-if="(item.created_by && $PERMISSIONS.MED.has(user.role)) || (item.created_by && item.created_by._id == user._id)" @click="openDeleteDialog(item)" color="error" > <v-icon small> mdi-delete </v-icon> </v-btn>
             </v-col>
         </v-row>
         </v-card-title>
@@ -106,7 +106,8 @@
         <v-card-title class="headline"> {{ displayExp.title || "" }} </v-card-title>
         <v-card-text>
           <h4> {{ displayExp.company_name || "" }} </h4>
-          <p> {{ displayExp.date || "" }}}} </p>
+          <p> {{ new Date(displayExp.date).toString().slice(4,25) || "" }} </p>
+          <p> {{ displayExp.created_by }} </p>
           <Editor
             mode="viewer"
             :outline="true"
@@ -194,7 +195,6 @@ export default {
         const access_token = window.$cookies.get("jwt");
         let tokens = JSON.parse(atob(access_token.split(".")[1]));
         this.user = tokens;
-        console.log(this.user);
         this.$axios.get('/api/interviewExperiences/')
             .then(res => {
                 this.fetchedData = res.data;
@@ -293,8 +293,10 @@ export default {
       },
       deleteExperience() {
         var item = this.displayExp;
+        console.log(this.user);
+        var url = '/api/interviewExperiences/';
         if(item.created_by) {
-          var url = item.created_by._id != this.user._id ? '/api/interviewExperiences/' : '/api/interviewExperiences/deleteMyExp/';
+          url = item.created_by._id != this.user._id ? url : '/api/interviewExperiences/deleteMyExp/';
         }
           this.$axios.delete(url+item._id)
           .then(res => {

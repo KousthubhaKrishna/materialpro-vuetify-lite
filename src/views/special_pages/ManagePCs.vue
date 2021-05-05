@@ -1,12 +1,14 @@
 <template>
   <v-container fluid class="down-top-padding">
-    <v-row>
-      <v-col>
-        <h2>Add/Edit Coordinator Accounts</h2>
+    <v-card class="mb-5">
+      <v-card-title>
+        <h3>Add/Edit Coordinator Accounts</h3>
+      </v-card-title>
+      <v-card-text>
         <p> Add accounts, edit details and delete accounts. </p>
-    <PCAccountTable/>
-      </v-col>
-    </v-row>
+        <PCAccountTable/>
+      </v-card-text>
+      </v-card>
   </v-container>
 </template>
 

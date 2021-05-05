@@ -126,7 +126,7 @@ export default {
         {
           title: "E-resources",
           icon: "mdi-book",
-          to: "/dashboard/icons"
+          to: "/dashboard/resources"
         },
         {
           title: "Students",

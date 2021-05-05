@@ -21,8 +21,9 @@
             <EditCompany :company = "company"></EditCompany>
             
             <v-btn
-              color="red"
+              color="error"
               depressed
+              dark
               @click="deleteCompany(company._id)"
             >
               <v-icon left>
