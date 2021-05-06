@@ -16,9 +16,8 @@
 
   <div>
     <v-data-table
-      :headers="headers"
-      :items="desserts"
-      sort-by="calories"
+      :headers="dataHeaders"
+      :items="data"
       class="elevation-1"
     >
       <template v-slot:top>
@@ -51,65 +50,37 @@
               <v-card-title>
                 <span class="headline">{{ formTitle }}</span>
               </v-card-title>
-  
+              <v-form ref="form">
               <v-card-text>
                 <v-container>
                   <v-row>
-                    <v-col
-                      cols="12"
-                      sm="6"
-                      md="4"
-                    >
+
+                    <v-col cols="12" v-for="(field,index) in fields" :key="index">
                       <v-text-field
-                        v-model="editedItem.name"
-                        label="Dessert name"
+                      v-if="field == 'backlogs'"
+                        v-model="editedItem[field]"
+                        :label="field"
+                        type = "number"
+                      ></v-text-field>
+                      <v-text-field
+                      v-else
+                      v-model="editedItem[field]"
+                      :label="field"
+                      :rules="[rules.required]"
                       ></v-text-field>
                     </v-col>
-                    <v-col
-                      cols="12"
-                      sm="6"
-                      md="4"
-                    >
-                      <v-text-field
-                        v-model="editedItem.calories"
-                        label="Calories"
-                      ></v-text-field>
-                    </v-col>
-                    <v-col
-                      cols="12"
-                      sm="6"
-                      md="4"
-                    >
-                      <v-text-field
-                        v-model="editedItem.fat"
-                        label="Fat (g)"
-                      ></v-text-field>
-                    </v-col>
-                    <v-col
-                      cols="12"
-                      sm="6"
-                      md="4"
-                    >
-                      <v-text-field
-                        v-model="editedItem.carbs"
-                        label="Carbs (g)"
-                      ></v-text-field>
-                    </v-col>
-                    <v-col
-                      cols="12"
-                      sm="6"
-                      md="4"
-                    >
-                      <v-text-field
-                        v-model="editedItem.protein"
-                        label="Protein (g)"
-                      ></v-text-field>
-                    </v-col>
+                   
                   </v-row>
                 </v-container>
+                <small>*indicates required field</small>
+              <v-alert v-if="error.length > 0" dense outlined text type="error">
+                {{ error }}
+                </v-alert>
               </v-card-text>
+
   
               <v-card-actions>
+
                 <v-spacer></v-spacer>
                 <v-btn
                   color="blue darken-1"
@@ -126,11 +97,12 @@
                   Save
                 </v-btn>
               </v-card-actions>
+              </v-form>
             </v-card>
           </v-dialog>
           <v-dialog v-model="dialogDelete" max-width="500px">
             <v-card>
-              <v-card-title class="headline">Are you sure you want to delete this item?</v-card-title>
+              <v-card-title>Are you sure you want to delete this item?</v-card-title>
               <v-card-actions>
                 <v-spacer></v-spacer>
                 <v-btn color="blue darken-1" text @click="closeDelete">Cancel</v-btn>
@@ -159,10 +131,23 @@
       <template v-slot:no-data>
         <v-btn
           color="primary"
-          @click="initialize"
+          @click="reset"
         >
           Reset
         </v-btn>
+        <!-- <v-dialog v-model="dialogReset" max-width="500px">
+            <v-card>
+              <v-card-text>Are you sure you want to reset the snap?<br/>
+                          You will lose the entire Snap data once you click confirm
+              </v-card-text>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="blue darken-1" text @click="closeDelete">Cancel</v-btn>
+                <v-btn color="blue darken-1" text @click="Confirm">OK</v-btn>
+                <v-spacer></v-spacer>
+              </v-card-actions>
+            </v-card>
+          </v-dialog> -->
       </template>
     </v-data-table>
   </div>
@@ -189,35 +174,17 @@ import axios from 'axios'
       error:"",
       dialog: false,
       dialogDelete: false,
-      headers: [
-        {
-          text: 'Dessert (100g serving)',
-          align: 'start',
-          sortable: false,
-          value: 'name',
-        },
-        { text: 'Calories', value: 'calories' },
-        { text: 'Fat (g)', value: 'fat' },
-        { text: 'Carbs (g)', value: 'carbs' },
-        { text: 'Protein (g)', value: 'protein' },
-        { text: 'Actions', value: 'actions', sortable: false },
-      ],
+      dialogReset:false,
       dataHeaders:[],
-      desserts: [],
+      data:[],
+      fields:[],
+
       editedIndex: -1,
-      editedItem: {
-        name: '',
-        calories: 0,
-        fat: 0,
-        carbs: 0,
-        protein: 0,
-      },
-      defaultItem: {
-        name: '',
-        calories: 0,
-        fat: 0,
-        carbs: 0,
-        protein: 0,
+      editedItem: {},
+      defaultItem: {},
+      rules:{
+          required: value => !!value || " ",
+          number: v => /^\d+$/.test(v)||'This field only accept numbers',
       },
     }),
 
@@ -234,29 +201,51 @@ import axios from 'axios'
       dialogDelete (val) {
         val || this.closeDelete()
       },
+
+      // snapId(val){
+      //   console.log("snap changed from " + val )
+      //   // this.getSnapData(this.snapID);
+      // }
     },
 
     created(){
-      this.getSnapData();
+      this.getSnapData(this.snapId);
     },
 
     methods: {
 
     initialize () {
-      console.log("table",this.snap)
+      this.dataHeaders = [];
       this.snap.fields.forEach(element => {
-        this.dataHeaders[element] = this.snap.data[element];
-        console.log(this.dataHeaders); 
+        this.dataHeaders.push({text: element,value: element,})
+        this.editedItem[element]=""
+        this.fields.push(element);
       });
-     
+      this.snap.extra_fields.forEach(element => {
+        this.dataHeaders.push({text: element,value: element,})
+        this.editedItem[element]=""
+        this.fields.push(element);
+      });
+      this.dataHeaders.push({ text: 'Actions', value: 'actions', sortable: false })
+      this.defaultItem = this.editedItem;
     },
 
-    getSnapData(){
-       axios.get('/api/snaps/'+this.snapId)
+    reset(){
+      this.dialogReset = true;
+    },
+
+    confirm(){
+      this.initialize();
+    },
+
+    getSnapData(val){
+       axios.get('/api/snaps/'+val)
       .then(response=>{
           this.snap = response.data;
+          this.data = this.snap.data;
           this.initialize();
-          console.log(this.snap);
+          console.log("snap",this.snap);
+          console.log("snap data",this.data);
       })
       .catch(error =>{
           console.log(error);
@@ -265,19 +254,28 @@ import axios from 'axios'
     },
 
     editItem (item) {
-      this.editedIndex = this.desserts.indexOf(item)
+      this.editedIndex = this.data.indexOf(item)
       this.editedItem = Object.assign({}, item)
       this.dialog = true
     },
 
     deleteItem (item) {
-      this.editedIndex = this.desserts.indexOf(item)
+      this.editedIndex = this.data.indexOf(item)
       this.editedItem = Object.assign({}, item)
       this.dialogDelete = true
     },
 
     deleteItemConfirm () {
-      this.desserts.splice(this.editedIndex, 1)
+      this.data.splice(this.editedIndex, 1)
+     
+      axios.patch('/api/snaps/remove_data/'+this.snap._id, this.data[this.editedIndex])
+      .then(response =>{
+      console.log("deleted successfully",response.data);
+      })
+      .catch(error =>{
+          console.log(error)
+      })
+     
       this.closeDelete()
     },
 
@@ -299,19 +297,46 @@ import axios from 'axios'
 
     save () {
       if (this.editedIndex > -1) {
-        Object.assign(this.desserts[this.editedIndex], this.editedItem)
+        Object.assign(this.data[this.editedIndex], this.editedItem)
+        let isValid = this.$refs.form.validate(true);
+          if(isValid){
+            // this.dialog=false;
+              axios.patch('/api/snaps/update_data/'+this.snap._id, this.editedItem)
+              .then(response =>{
+              console.log("updated successfully",response.data);
+              })
+              .catch(error =>{
+                  console.log(error)
+              })
+  
+            }
+            else{
+              this.error = "Fill all the required Fields";
+            } 
+
       } else {
-        this.desserts.push(this.editedItem)
+        let isValid = this.$refs.form.validate(true);
+          if(isValid){
+            // this.dialog=false;
+              this.editedItem['user_email'] = " "; 
+              axios.patch('/api/snaps/add_data/'+this.snap._id, this.editedItem)
+              .then(response =>{
+              console.log("registered successfully",response.data);
+              this.data.push(this.editedItem)
+              })
+              .catch(error =>{
+                  console.log(error)
+              })
+  
+            }
+            else{
+              this.error = "Fill all the required Fields";
+            } 
       }
       this.close()
     },
   },
 
-    
-    components:{
-    //   AddDatasnapshot: () => import('@/components/studentDashboard/snaps/addDatasnapshot'),
-      // TableCRUD: () => import('@/components/vuetifyComponents/tables-simple/TableCRUD'),
-    }
   }
 </script>
 

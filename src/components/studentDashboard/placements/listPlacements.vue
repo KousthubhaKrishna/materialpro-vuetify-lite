@@ -1,7 +1,15 @@
 <template>
-  <v-container fluid class="down-top-padding">
-      <v-card>
-          <v-card-title>
+  <v-container fluid >
+      <v-img
+    lazy-src="https://picsum.photos/id/11/10/6"
+    :aspect-ratio="16/10"
+    max-height="280"
+    width = "100%"
+    :src="company.photo_url"
+
+    ></v-img>
+      <v-card >
+          <v-card-title style="font-size-large" >
               {{company.company_name}}
           </v-card-title>
           <v-card-text>
@@ -9,20 +17,32 @@
           </v-card-text>
       </v-card>
 
-      <v-row><v-col>
-      <AddPlacementDetails v-if="$PERMISSIONS.MED.has(user.role)"></AddPlacementDetails>
-      </v-col>
+      <v-divider></v-divider>
+
+      <v-row justify="end">
+        <v-col>
+            <AddPlacementDetails v-if="$PERMISSIONS.MED.has(user.role)"></AddPlacementDetails>
+        </v-col>
       </v-row>
      
       <v-row>
           <v-col v-for="placement in placements" :key="placement._id">
-              <v-card elevation="3" outlined @click="openPlacement(placement._id)">
+              <v-hover
+              v-slot="{ hover }"
+              open-delay="200"
+            >
+              <v-card  
+              outlined 
+              @click="openPlacement(placement._id)"
+              :elevation="hover ? 5 : 1"
+              :class="{ 'on-hover': hover }">
                   <v-card-text>
                   {{ placement.job_type }}
                   {{ placement.package }}
                   {{ placement.job_description }}
                   </v-card-text>
               </v-card>
+              </v-hover>
           </v-col>
       </v-row>
 

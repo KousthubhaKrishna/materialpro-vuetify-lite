@@ -9,7 +9,7 @@
              <v-btn
               color="red"
               depressed
-              @click="deletePlacement"
+              @click="deleteItem(0,'placement')"
               v-if="$PERMISSIONS.MED.has(user.role)"
             >
               <v-icon left>
@@ -17,6 +17,17 @@
               </v-icon>
               Delete
             </v-btn>
+            <v-dialog v-model="dialogDelete" max-width="500px">
+            <v-card>
+              <v-card-title>Are you sure you want to delete this item?</v-card-title>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="blue darken-1" text @click="closeDelete">Cancel</v-btn>
+                <v-btn color="blue darken-1" text @click="deleteItemConfirm">OK</v-btn>
+                <v-spacer></v-spacer>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
                
             <v-card-text>
               {{ placement.job_type }}<br/>
@@ -36,25 +47,25 @@
             </v-card-text>
 
             <v-card-actions>
-            <Register v-if="$ROLES.STUDENT == user.role || user.role == $ROLES.PC"></Register>
+              <p v-if="isRegistered"> Already Registered for this Placement </p>
+              <div  v-if="($ROLES.STUDENT == user.role || user.role == $ROLES.PC) && !isRegistered">
+              <Register></Register>
+              <Counter :lastDate="lastDate" @timerOut="timerOut"></Counter>
+              </div>
             </v-card-actions>
             </v-card>
 
             <v-row>
-              <v-col col="12" sm="8">
+              <v-col col="12">
                 <v-card outlined elevation="1">
                   <v-card-title>Announcements</v-card-title>
                   <v-card-text>
                     <p v-for="(ann,index) in announcements" :key="index">
-<<<<<<< HEAD
-                      {{ann.title}}
-=======
                     {{ann.title}}
->>>>>>> 5091b4a (Added E Resources)
                       {{ann.message}}
                       {{ann.type}}
                       {{ann.date}}
-                      <v-btn v-if="$PERMISSIONS.MED.has(user.role)"><v-icon @click="deleteMessage(ann._id)">mdi-delete</v-icon></v-btn>
+                      <v-btn v-if="$PERMISSIONS.MED.has(user.role)"><v-icon @click="deleteItem(ann._id,'announcement')">mdi-delete</v-icon></v-btn>
                     </p>
                   </v-card-text>
                   <v-card-actions>
@@ -180,20 +191,25 @@
               </v-col>
 
 
-              <v-col col="12" sm="4">
-                <AddDatasnapshot :first="isFirst" v-if="$PERMISSIONS.MED.has(user.role)"></AddDatasnapshot>
+              <v-col col="12"  v-if="$PERMISSIONS.MED.has(user.role)">
+                <AddDatasnapshot :first="isFirst"></AddDatasnapshot>
 
-                <v-row v-for="(snap,index) in snaps" :key="index">
+                <v-row v-for="snap in snaps" :key="snap._id">
                   <v-card elevation="1" outlined @click="openSnap(snap._id)">
-                  <v-card-title>{{snap.snap_name}}</v-card-title>
-                  <v-card-text>{{ snap.type_of_data}}</v-card-text>
+                    <v-card-title>{{snap.snap_name}}</v-card-title>
+                    <v-card-text>{{ snap.type_of_data}}</v-card-text>
+                    <v-btn >
+                      <v-icon @click="deleteItem(snap._id,'snap')">mdi-delete</v-icon>
+                    </v-btn> 
                   </v-card>
                 </v-row>
 
-              </v-col>
-            </v-row>
+                <v-row v-for="snap in snaps" :key="snap._id">
+                  <DisplayDatasnapshot v-if="disable == snap._id" :snapId="snapId" ></DisplayDatasnapshot>
+                </v-row>
 
-          <DisplayDatasnapshot v-if="$PERMISSIONS.MED.has(user.role) && disable" :snapId="snapId" ></DisplayDatasnapshot>
+              </v-col>
+            </v-row>      
 
 </v-container>
 </template>
@@ -231,59 +247,111 @@ import { EventBus } from '@/event-bus.js'
       type : ["Message","Meeting","Pre-placement Talk","Test"],
       announcements:"",
       dialog:false,
+      dialogDelete: false,
+      annData: "",
       menu: false,
       error:"",
       disable:false,
       isFirst: false,
       user: "",
-      snapsLength:"",
+      snap:{},
+      model:"",
+      lastDate:Date,
+      isRegistered: false,
     }),
+
+      watch: {
+      dialog (val) {
+        val || this.close()
+      },
+      dialogDelete (val) {
+        val || this.closeDelete()
+      },
+    },
     created(){
 
       const access_token = window.$cookies.get("jwt");
       let tokens = JSON.parse(atob(access_token.split(".")[1]));
       this.user = tokens;
-      
-      axios.get('/api/placements/'+this.$route.params.id)
-      .then(response=>{
-          this.placement = response.data;
-          this.company_id = response.data.company_id;
-          this.firstSnap = this.placement.register_snap;
-      })
-      .catch(error =>{
-          console.log(error);
-      })
-
+        
+      this.getplacementData();
       this.getAnnouncements();
+      this.getSnapData();
 
       if(this.$PERMISSIONS.MED.has(this.user.role)){
-      
-      axios.get('/api/snaps/placement_snaps/'+this.$route.params.id)
-      .then(response=>{
-          this.snaps = response.data;
-          if(this.snaps.length==0)
-          {
-            this.isFirst = true;
-          }
-
-      })
-      .catch(error =>{
-          console.log(error);
-      })
+        axios.get('/api/snaps/placement_snaps/'+this.$route.params.id)
+        .then(response=>{
+            this.snaps = response.data;            
+            if(this.snaps.length==0)
+            {
+              this.isFirst = true;
+            }
+        })
+        .catch(error =>{
+            console.log(error);
+        })
       }
 
     },
     mounted(){
       EventBus.$on('placement', (value) => {
-        console.log(value);
           this.placement = value 
+        });
+      EventBus.$on('snaps', (value) => {
+        console.log(value);
+          this.snaps.push(value);
         });
     },
      methods:{
+       
+       timerOut(){
+         this.isRegistered = true;
+       },
 
-        save (date) {
+      isAlreadyRegistered(){
+          // console.log(this.snapData.data['user_email'].has(this.user.user_email))
+        for (let index = 0; index < this.snap.data.length; index++) {
+          if(this.snap.data[index]['user_email'] == this.user.user_email){
+            this.isRegistered = true;
+            break;
+          }
+        }
+      },
+
+       getSnapData(){
+          axios.get('/api/snaps/snap_data/'+this.$route.params.id)
+          .then(response=>{
+              this.snap = response.data;
+              this.lastDate = this.snap.last_date; 
+              this.isAlreadyRegistered();              
+          })
+          .catch(error =>{
+              console.log(error);
+          })
+       },
+
+      save (date) {
         this.$refs.menu.save(date)
       },
+
+      getplacementData(){
+        axios.get('/api/placements/'+this.$route.params.id)
+        .then(response=>{
+            this.placement = response.data;
+            this.company_id = response.data.company_id;
+            this.firstSnap = this.placement.register_snap;
+            console.log("placement",this.placement);
+            this.firstSnap = this.placement.register_snap;
+
+        })
+        .catch(error =>{
+            console.log(error);
+        })
+      },
+
+      closeDelete () {
+      this.dialogDelete = false     
+    },
 
        getAnnouncements(){
           axios.get('/api/announcements/'+this.$route.params.id)
@@ -304,7 +372,38 @@ import { EventBus } from '@/event-bus.js'
 
         openSnap(data){
           this.snapId = data;
-          this.disable = true;
+          this.disable = data;
+        },
+
+        deleteItem(data, val){
+          this.dialogDelete = true;
+          this.annData = data;
+          this.model = val;
+        },
+
+        deleteItemConfirm(){
+          if(this.model == 'placement'){
+          console.log(this.company_id)
+          axios.delete('/api/placements/'+this.$route.params.id)
+            .then(response =>{
+              console.log(" deleted succesfully",response.data)
+              console.log(this.company_id._id)
+              this.$router.push({
+                name: 'CompanyDetails',
+                params: { id: this.company_id._id }
+            });
+                })
+              .catch(error =>{
+                  console.log(error)
+              })
+          }
+          else if(this.model == 'announcement'){
+            this.deleteMessage(this.annData);
+          }
+          else if(this.model == 'snap'){
+            this.deleteSnap(this.annData);
+          }
+          this.closeDelete();
         },
 
         deleteMessage(data){
@@ -312,6 +411,17 @@ import { EventBus } from '@/event-bus.js'
             .then(response =>{
               console.log(" deleted succesfully",response.data)
               this.getAnnouncements();
+                })
+              .catch(error =>{
+                  console.log(error)
+              })
+        },
+
+        deleteSnap(data){
+          axios.delete('/api/snaps/'+data)
+            .then(response =>{
+              console.log(" deleted succesfully",response.data);
+              this.$delete(this.snaps,);
                 })
               .catch(error =>{
                   console.log(error)
@@ -337,27 +447,12 @@ import { EventBus } from '@/event-bus.js'
               this.error = "Fill all the required Fields";
             } 
         },
-
-        deletePlacement(){
-          console.log(this.company_id)
-          axios.delete('/api/placements/'+this.$route.params.id)
-            .then(response =>{
-              console.log(" deleted succesfully",response.data)
-              console.log(this.company_id)
-              this.$router.push({
-                name: 'CompanyDetails',
-                params: { id: this.company_id }
-            });
-                })
-              .catch(error =>{
-                  console.log(error)
-              })
-        }
     },
     components:{
       AddDatasnapshot: () => import('@/components/studentDashboard/placements/addDatasnapshot'),
       DisplayDatasnapshot: () => import('@/components/studentDashboard/placements/displayDatasnapshots'),
       Register: () => import('@/components/studentDashboard/placements/register'),
+      Counter: () => import('@/components/studentDashboard/placements/counter'),
       EditPlacement: () => import('@/components/studentDashboard/placements/editPlacements'),
     }
   }

@@ -88,7 +88,7 @@
                 <v-autocomplete
                   :items="items"
                   label="Fields*"
-                  v-model="snapData.fields"
+                  v-model="fields"
                   multiple
                   :rules="[rules.required]"
                 ></v-autocomplete>
@@ -140,6 +140,7 @@
 
 <script>
 import axios from 'axios';
+import { EventBus } from '@/event-bus.js'
 
   export default {
     name: "addSnapshot",
@@ -161,6 +162,8 @@ import axios from 'axios';
           last_date:"",
           isFirst:"",
       },
+      set:{},
+      fields:[],
       extra_fields:[],
       extra_field: null,
       entered:[],
@@ -176,13 +179,30 @@ import axios from 'axios';
         return this.entered.concat(this.extra_field||[]);
       }
     },
-   
+
+    created(){
+      this.initialize();
+    },
+
     methods:{
 
+      initialize(){
+        this.items.forEach(element => {
+          this.set[element] = this.getField(element);
+        });
+      },
+
+      getField(data){
+          data = data.replace(/ /g,'_').toLowerCase();
+          return data;
+      },
+
+
       enter(){
-        this.extra_fields.push(this.extra_field);
+        this.extra_fields.push(this.getField(this.extra_field));
         this.entered.push(this.extra_field);
         this.extra_field = '';
+        console.log(this.extra_fields)
       },
 
         save (date) {
@@ -204,10 +224,16 @@ import axios from 'axios';
                 this.dialog = false;
                 // this.snapData.last_date = this.$refs.last_date.toISOString();
                 this.snapData.isFirst = this.first;
+                this.fields.forEach(element => {
+                  this.snapData.fields.push(this.set[element]);
+                });
+                console.log(this.snapData.fields);
                 this.snapData.extra_fields = this.extra_fields;
                 axios.post('/api/snaps/'+this.$route.params.id, this.snapData)
                 .then(response =>{
                 console.log("form submission",response.data);
+                EventBus.$emit('snaps', response.data);
+                
                 })
                 .catch(error =>{
                     console.log(error)

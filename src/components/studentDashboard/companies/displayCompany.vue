@@ -1,43 +1,58 @@
 <template>
-    <v-container fluid class="pa-10">
+    <div class = "mx-6">
+        <v-container class ="px-10" >
+          <title>
+            Companies List
+          </title>
 
-         <v-row>
-          <v-col cols="12" v-for="(company,index) in companies" :key="index" sm="3">
-
-               <v-card outlined @click="openPlacements(company._id)">
-            <v-img
-              :src="company.photo_url"
-              class="white--text align-end"
-              gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
-              height="150px"
-              alt="company.company_name"
+         <v-row justify='end'>
+           <v-col cols="5">
+             <v-text-field
+              v-model="search"
+              append-icon="mdi-magnify"
+              label="  Search companies"
+              hide-details
+              single-line
+            ></v-text-field>
+           </v-col>
+         </v-row> 
+        </v-container>
+        <v-divider></v-divider>
+        <v-container class=" pa-6">
+         <v-row align='center'>
+          <v-col cols="12" v-for="(company,index) in filteredCompanies" :key="index" sm="4 ">
+            <v-hover
+              v-slot="{ hover }"
+              open-delay="200"
             >
-            </v-img>
-            <v-card-title v-text="company.company_name"></v-card-title>
-
-
+            <v-card
+            :elevation="hover ? 5 : 1"
+            :class="{ 'on-hover': hover }"
+            outlined 
+            @click="openPlacements(company._id)">
+            <v-card-text class="font-weight-bold text-center" v-text="company.company_name"></v-card-text>
+            <v-spacer></v-spacer>
             <v-card-actions v-if="$PERMISSIONS.MED.has(user.role)">
-
+              <div>
             <EditCompany :company = "company"></EditCompany>
-            
-            <v-btn
-              color="error"
-              depressed
-              dark
+
+            <v-icon
+              small
+              class="mr-2"
               @click="deleteCompany(company._id)"
             >
-              <v-icon left>
-                mdi-delete
-              </v-icon>
-              Delete
-            </v-btn>
+              mdi-delete
+            </v-icon>
+              </div>
+           
             </v-card-actions>
 
           </v-card>
-                
+          </v-hover>
           </v-col>
       </v-row>
-    </v-container>
+        </v-container>
+    </div>
 </template>
 
 <script>
@@ -50,7 +65,15 @@ export default {
     data: () => ({
       companies:[],
       user:"",
+      search:'',
   }),
+  computed:{
+    filteredCompanies: function(){
+      return this.companies.filter((company) => {
+        return company.company_name.match(this.search);
+      })
+    }
+  },
   methods:{
       openPlacements(data){
           this.$router.push({

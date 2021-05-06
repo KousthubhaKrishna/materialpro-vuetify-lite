@@ -135,7 +135,6 @@ export default {
                 axios.post('/api/company',this.companyData)
                 .then(response =>{
                 console.log("form submission",response.data)
-                // this.$router.push({ name: "Company" });
                 EventBus.$emit('companies', response.data);
                 })
                 .catch(error =>{

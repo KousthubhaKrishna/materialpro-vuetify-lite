@@ -1,19 +1,27 @@
 <template>
-  <v-row justify="center">
+  <div>
     <v-dialog
       v-model="dialog"
       persistent
       max-width="500px"
     >
       <template v-slot:activator="{ on, attrs }">
-        <v-btn
+         <v-icon
+              small
+              class="mr-2"
+              v-bind="attrs"
+              v-on="on"
+            >
+              mdi-pencil
+            </v-icon>
+        <!-- <v-btn
           color="primary"
           dark
           v-bind="attrs"
           v-on="on"
         >
           Edit
-        </v-btn>
+        </v-btn> -->
       </template>
       <v-card>  
         <v-card-title>
@@ -98,7 +106,7 @@
      
     </v-dialog>
 
-    </v-row>
+  </div>
 </template>
 
 <script>

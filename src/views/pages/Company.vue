@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid class="down-top-padding">
+  <v-container fluid fill-height fill-width >
 
       
       <AddCompany v-if="$PERMISSIONS.MED.has(user.role)"></AddCompany>
