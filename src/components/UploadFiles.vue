@@ -26,8 +26,7 @@
       <v-col cols="4" class="pl-2">
         <v-select 
             :items="company_names" 
-            label="Company"  
-            :disabled="disabled"
+            label="Company"
             :rules="generalRules"
             v-model="selected_company"
             >

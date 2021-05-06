@@ -9,8 +9,8 @@ module.exports = {
         target: "http://localhost:3080"
       },
       "files/": {
-        target: "http://localhost:8888"
-      }
+        target: "https://cdc-file-server.herokuapp.com"
+      },
     }
   },
 }

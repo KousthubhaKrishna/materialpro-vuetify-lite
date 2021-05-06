@@ -95,9 +95,11 @@
             </v-col>
         </v-row>
         </v-card-title>
-        <v-card-text @click="displayExpDialog(item)">
+        <v-card-subtitle>
             <h4 class="green--text"> {{ item.company_name }} </h4>
             <p> {{ new Date(item.date).toString().slice(4,25) }} </p>
+        </v-card-subtitle>
+        <v-card-text @click="displayExpDialog(item)">
             <p> {{ item.content.slice(0,500) }} </p>
         </v-card-text>
     </v-card>

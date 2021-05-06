@@ -4,7 +4,7 @@
     <!-- ----------------------------------------------------------------------------- -->
     <div>
         <v-list-item-subtitle class="text-wrap">
-        This is an example of a planner with additional event handlers and external components controlling the display of the calendar.
+        You can find all the important announcements and events here. Click on the event or the day for detailed view.
         </v-list-item-subtitle>
         <div class="mt-4">
             <v-sheet height="64">
@@ -77,30 +77,16 @@
                     :color="selectedEvent.color"
                     dark
                     >
-                    <v-btn icon>
-                        <v-icon>mdi-pencil</v-icon>
-                    </v-btn>
                     <v-toolbar-title v-html="selectedEvent.name"></v-toolbar-title>
                     <v-spacer></v-spacer>
                     <v-btn icon>
                         <v-icon>mdi-heart</v-icon>
                     </v-btn>
-                    <v-btn icon>
-                        <v-icon>mdi-dots-vertical</v-icon>
-                    </v-btn>
                     </v-toolbar>
                     <v-card-text>
-                    <span v-html="selectedEvent.details"></span>
+                    <p class="font-weight-medium"> {{ selectedEvent.details }} </p>
+                    Posted on: {{ selectedEvent.posted_date }}
                     </v-card-text>
-                    <v-card-actions>
-                    <v-btn
-                        text
-                        color="secondary"
-                        @click="selectedOpen = false"
-                    >
-                        Cancel
-                    </v-btn>
-                    </v-card-actions>
                 </v-card>
                 </v-menu>
             </v-sheet>
@@ -131,7 +117,7 @@ export default {
       fetchedEvents : [],
       colors: ['info', 'success', 'warning', 'error', 'indigo', 'pink', 'grey darken-1'],
       names: ['Meeting', 'Holiday', 'PTO', 'Travel', 'Event', 'Birthday', 'Conference', 'Party'],
-      eventTypes: { "Message":"info","Meeting":"success","Pre-placement Talk":"warning","Test":"indigo"}
+      eventTypes: { "Message":"","Meeting":"info","Pre-placement Talk":"indigo","Test":"success"}
   }),
   computed: {
       title () {
@@ -164,7 +150,7 @@ export default {
       },
       monthFormatter () {
         return this.$refs.calendar.getFormatter({
-          timeZone: 'UTC', month: 'long',
+          timeZone: 'IST', month: 'long',
         })
       },
     },
@@ -173,6 +159,7 @@ export default {
       this.$axios.get('/api/announcements/')
         .then(res => {
           this.fetchedEvents = res.data;
+          this.updateRange(this.start, this.end);
         })
         .catch(err => {
           console.log(err);
@@ -212,6 +199,7 @@ export default {
         nativeEvent.stopPropagation()
       },
       updateRange ({ start, end }) {
+        console.log("KOU",start);
         // const events = [
         //   {
         //     name: "name",
@@ -231,13 +219,16 @@ export default {
         console.log(this.fetchedEvents);
         for(let i = 0; i < this.fetchedEvents.length; i++) {
           events.push({
-            name: this.fetchedEvents[i].title || "Name",
-            start: this.formatDate(new Date(this.fetchedEvents[i].posted_date),false),
-            end: this.formatDate(new Date(this.fetchedEvents[i].posted_date), false),
-            color: this.eventTypes[this.fetchedEvents[i].type]
+            name: this.fetchedEvents[i].title,
+            start: this.formatDate(new Date(this.fetchedEvents[i].date),false),
+            end: this.formatDate(new Date(this.fetchedEvents[i].date), false),
+            color: this.eventTypes[this.fetchedEvents[i].type],
+            details: this.fetchedEvents[i].message,
+            posted_date: new Date(this.fetchedEvents[i].posted_date).toString().slice(4,15),
           })
         }
-        console.log(events)
+
+        // var events = [];
         // const min = new Date(`${start.date}T00:00:00`)
         // const max = new Date(`${end.date}T23:59:59`)
         // const days = (max.getTime() - min.getTime()) / 86400000
