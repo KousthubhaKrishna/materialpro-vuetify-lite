@@ -1,4 +1,5 @@
 import axios from "axios";
+const baseURL = "https://cdc-file-server.herokuapp.com";
 
 class UploadFilesService {
     upload(company, file, onUploadProgress) {
@@ -10,7 +11,7 @@ class UploadFilesService {
 
         formData.append("file", file);
 
-        return axios.post("/files/upload-file/" + company, formData, {
+        return axios.post(baseURL + "/files/upload-file/" + company, formData, {
             headers: {
                 "Content-Type": "multipart/form-data"
             },
@@ -19,15 +20,15 @@ class UploadFilesService {
     }
 
     getFiles() {
-        return axios.get("/files/");
+        return axios.get(baseURL + "/files/");
     }
 
     getFilesByCompany(company) {
-        return axios.get("/files/" + company);
+        return axios.get(baseURL + "/files/" + company);
     }
 
     deleteFilesByCompany(company, file) {
-        return axios.delete("/files/" + company + '/' + file);
+        return axios.delete(baseURL + "/files/" + company + '/' + file);
     }
 }
 
