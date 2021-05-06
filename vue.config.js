@@ -6,10 +6,10 @@ module.exports = {
   devServer: {
     proxy: {
       "api/": {
-        target: "http://localhost:3080"
+        target: process.env.API_URL || "http://localhost:3080"
       },
       "files/": {
-        target: "https://cdc-file-server.herokuapp.com"
+        target: process.env.API_URL || "https://cdc-file-server.herokuapp.com"
       },
     }
   },
