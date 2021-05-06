@@ -105,6 +105,7 @@
                   v-model="extra_field"
                   @keypress.enter="enter"
                 ></v-text-field>
+                <small class="orange--text">Type the text and press enter to add the text to Extra Fields</small> 
               </v-col>
 
             </v-row>

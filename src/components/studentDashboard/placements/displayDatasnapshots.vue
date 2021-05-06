@@ -1,6 +1,6 @@
 <template>
-<v-container>
-   <v-card>
+<v-col >
+   <v-card class="ma-2">
     <v-card-title>
       {{ snap.snap_name }}
     </v-card-title>
@@ -8,8 +8,6 @@
     <v-card-text>
       {{ snap.type_of_data }}<br/>
       {{ snap.placement_batch }}<br/>
-      {{ snap.fields }}<br/>
-      {{ snap.extra_fields }}<br/>
       {{ snap.last_date }}<br/>
     </v-card-text>
   </v-card>
@@ -19,12 +17,13 @@
       :headers="dataHeaders"
       :items="data"
       class="elevation-1"
+
     >
       <template v-slot:top>
         <v-toolbar
           flat
         >
-          <v-toolbar-title>My CRUD</v-toolbar-title>
+          <v-toolbar-title>{{ snap.type_of_data }} </v-toolbar-title>
           <v-divider
             class="mx-4"
             inset
@@ -135,30 +134,11 @@
         >
           Reset
         </v-btn>
-        <!-- <v-dialog v-model="dialogReset" max-width="500px">
-            <v-card>
-              <v-card-text>Are you sure you want to reset the snap?<br/>
-                          You will lose the entire Snap data once you click confirm
-              </v-card-text>
-              <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn color="blue darken-1" text @click="closeDelete">Cancel</v-btn>
-                <v-btn color="blue darken-1" text @click="Confirm">OK</v-btn>
-                <v-spacer></v-spacer>
-              </v-card-actions>
-            </v-card>
-          </v-dialog> -->
       </template>
     </v-data-table>
   </div>
 
-
-
-
-            <!-- <TableCRUD :snap="snapData"></TableCRUD> -->
-
-
-</v-container>
+</v-col>
 </template>
 
 <script>
@@ -202,10 +182,6 @@ import axios from 'axios'
         val || this.closeDelete()
       },
 
-      // snapId(val){
-      //   console.log("snap changed from " + val )
-      //   // this.getSnapData(this.snapID);
-      // }
     },
 
     created(){

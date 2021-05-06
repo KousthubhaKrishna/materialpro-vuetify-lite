@@ -1,5 +1,5 @@
 <template>
-<div>
+<v-row justify="end" class="mr-10 mt-8 mb-5">
     <v-dialog
       v-model="dialog"
       persistent
@@ -25,6 +25,16 @@
           <v-container>
 
             <v-row>
+              <v-col
+                cols="12"
+                sm="6"
+              >
+                <v-text-field
+                  label="Job Role"
+                  v-model="placementData.job_job_role"
+                  :rules="[rules.required]"
+                ></v-text-field>
+              </v-col>
               <v-col
                 cols="12"
                 sm="6"
@@ -134,7 +144,7 @@
         </v-form>
       </v-card>
     </v-dialog>
-  </div>
+  </v-row>
 </template>
 
 <script>
@@ -145,6 +155,7 @@ import axios from 'axios';
    data: () => ({
       dialog: false,
       placementData:{
+          job_role:"",
           job_type:"",
           job_description:"",
           package:"",

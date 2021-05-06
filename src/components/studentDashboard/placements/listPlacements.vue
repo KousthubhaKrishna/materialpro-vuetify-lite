@@ -1,51 +1,64 @@
 <template>
   <v-container fluid >
-      <v-img
-    lazy-src="https://picsum.photos/id/11/10/6"
-    :aspect-ratio="16/10"
-    max-height="280"
-    width = "100%"
-    :src="company.photo_url"
+    <v-card >
+        <v-img
+        lazy-src="https://picsum.photos/id/11/10/6"
+        :aspect-ratio="16/10"
+        max-height="280"
+        width = "100%"
+        cover
+        :src="company.photo_url"
 
-    ></v-img>
-      <v-card >
-          <v-card-title style="font-size-large" >
+        ></v-img>
+
+          <v-card-title style="font-size:3rem;font:roboto;font-weight:300" class="ma-5 pt-10" >
               {{company.company_name}}
           </v-card-title>
-          <v-card-text>
+          <v-card-text class="ma-5 pa-4 font-weight-medium "  style="font-size:0.9rem;font:timesnewroman;">
               {{company.description}}
           </v-card-text>
       </v-card>
 
       <v-divider></v-divider>
 
-      <v-row justify="end">
+      <v-sheet class="pl-7 py-6 pr-5 ">
+
+      <v-row>
+        <v-col><p style="font-size:1.5rem;">Placements</p></v-col>
         <v-col>
             <AddPlacementDetails v-if="$PERMISSIONS.MED.has(user.role)"></AddPlacementDetails>
         </v-col>
       </v-row>
+        <v-divider></v-divider>
+      <v-row v-if="placements.length==0" justify="center" class="pa-6">
+          <p>No Placements yet</p>
+      </v-row>
      
+     <v-sheet style="width:100%" class="mt-8 mx-6">
       <v-row>
-          <v-col v-for="placement in placements" :key="placement._id">
+          <v-col cols="12" v-for="placement in placements" :key="placement._id" sm="4">
               <v-hover
               v-slot="{ hover }"
               open-delay="200"
-            >
+              >
+            
               <v-card  
               outlined 
               @click="openPlacement(placement._id)"
-              :elevation="hover ? 5 : 1"
+              :elevation="hover ? 3 : 1"
+              color="#ECF0F1"
               :class="{ 'on-hover': hover }">
-                  <v-card-text>
+                  <v-card-text class="font-weight-large text--primary">
                   {{ placement.job_type }}
-                  {{ placement.package }}
-                  {{ placement.job_description }}
+                  <span text-align="right">{{ placement.placement_batch }}</span>
                   </v-card-text>
               </v-card>
               </v-hover>
           </v-col>
       </v-row>
+     </v-sheet>
 
+    </v-sheet>
       
     
   </v-container>
@@ -79,7 +92,6 @@ export default {
       axios.get('/api/company/'+this.$route.params.id)
       .then(response=>{
           this.company = response.data;
-          console.log(this.company);
       })
       .catch(error =>{
           console.log(error);
@@ -88,7 +100,6 @@ export default {
       axios.get('/api/placements/placements/'+this.$route.params.id)
       .then(response=>{
           this.placements = response.data;
-          console.log(this.placements);
       })
       .catch(error =>{
           console.log(error);
@@ -96,7 +107,6 @@ export default {
   },
   components:{
       AddPlacementDetails: () => import('@/components/studentDashboard/placements/addPlacementDetails'),
-      //AddDatasnapshot: () => import('@/components/studentDashboard/placements/addDatasnapshot'),
   }
 };
 </script>

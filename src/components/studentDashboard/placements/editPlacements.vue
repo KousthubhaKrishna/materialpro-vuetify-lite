@@ -6,14 +6,18 @@
       max-width="600px"
     >
       <template v-slot:activator="{ on, attrs }">
-        <v-btn
-          color="primary"
+        <v-btn  class="mx-2" icon >
+        <v-icon
+          color="gray"
+          medium
           dark
           v-bind="attrs"
           v-on="on"
         >
-          Edit Placement
+          mdi-pencil
+        </v-icon>
         </v-btn>
+
       </template>
 
       <v-card>
@@ -25,6 +29,16 @@
           <v-container>
 
             <v-row>
+              <v-col
+                cols="12"
+                sm="6"
+              >
+                <v-text-field
+                  label="Job Role"
+                  v-model="placementData.job_role"
+                  :rules="[rules.required]"
+                ></v-text-field>
+              </v-col>
               <v-col
                 cols="12"
                 sm="6"
@@ -148,6 +162,7 @@ import { EventBus } from '@/event-bus.js'
    data: () => ({
       dialog: false,
       placementData:{
+        job_role:"",
           job_type:"",
           job_description:"",
           package:"",

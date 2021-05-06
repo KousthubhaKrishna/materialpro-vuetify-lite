@@ -6,22 +6,18 @@
       max-width="500px"
     >
       <template v-slot:activator="{ on, attrs }">
-         <v-icon
-              small
-              class="mr-2"
+         <v-btn
+              class="ma-1"
+              color="gray"
+              plain
+              elevation="0"
               v-bind="attrs"
               v-on="on"
             >
-              mdi-pencil
-            </v-icon>
-        <!-- <v-btn
-          color="primary"
-          dark
-          v-bind="attrs"
-          v-on="on"
-        >
-          Edit
-        </v-btn> -->
+            <v-icon small>mdi-pencil</v-icon>
+            Edit
+        </v-btn>
+        
       </template>
       <v-card>  
         <v-card-title>

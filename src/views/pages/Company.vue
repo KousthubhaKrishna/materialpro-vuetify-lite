@@ -1,12 +1,15 @@
 <template>
-  <v-container fluid fill-height fill-width >
+  <div>
 
-      
+       <h1 class="pa-4">
+           Visiting Companies List
+        </h1>
       <AddCompany v-if="$PERMISSIONS.MED.has(user.role)"></AddCompany>
       <DisplayCompany></DisplayCompany>
 
+
     
-  </v-container>
+  </div>
 </template>
 
 <script>

@@ -1,10 +1,14 @@
 <template>
     <v-container v-if="loaded">
-        <h5 v-if="!expired">Registration ends in 
-        {{ displayDays }}:
-        {{ displayHours }}:
-        {{ displayMinutes }}:
-        {{ displaySeconds }}</h5>
+        <div v-if="!expired">
+        <p class="font-weight-regular">Registration ends in
+            <span style="font-size:1.3rem;">
+        {{ displayDays }} :
+        {{ displayHours }} :
+        {{ displayMinutes }} :
+        {{ displaySeconds }}
+            </span></p>
+        </div>
         <h5 v-else>Registrations Closed </h5>
 
     </v-container>

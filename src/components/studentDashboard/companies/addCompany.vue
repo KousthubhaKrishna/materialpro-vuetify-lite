@@ -1,5 +1,5 @@
 <template>
-  <v-row justify="center">
+  <v-row justify="end" class="mr-10">
     <v-dialog
       v-model="dialog"
       persistent
@@ -7,7 +7,7 @@
     >
       <template v-slot:activator="{ on, attrs }">
         <v-btn
-          color="primary"
+          color="success"
           dark
           v-bind="attrs"
           v-on="on"
