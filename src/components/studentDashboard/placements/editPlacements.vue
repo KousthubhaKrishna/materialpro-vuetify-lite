@@ -162,7 +162,7 @@ import { EventBus } from '@/event-bus.js'
    data: () => ({
       dialog: false,
       placementData:{
-        job_role:"",
+          job_role:"",
           job_type:"",
           job_description:"",
           package:"",
@@ -199,7 +199,7 @@ import { EventBus } from '@/event-bus.js'
                     console.log(error)
                 })
         },
-
+        
         editPlacement(){
             let isValid = this.$refs.form.validate(true);
             console.log(isValid);

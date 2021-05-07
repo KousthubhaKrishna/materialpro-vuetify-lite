@@ -31,7 +31,7 @@
               >
                 <v-text-field
                   label="Job Role"
-                  v-model="placementData.job_job_role"
+                  v-model="placementData.job_role"
                   :rules="[rules.required]"
                 ></v-text-field>
               </v-col>
