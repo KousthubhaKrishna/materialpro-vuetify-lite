@@ -506,7 +506,7 @@ export default {
     },
   methods: {
     initialize() {
-          const access_token = window.$cookies.get("jwt");
+    const access_token = window.$cookies.get("jwt");
     let tokens = JSON.parse(atob(access_token.split(".")[1]));
     this.role = tokens.role;
         this.$axios.get('/api/students/myProfile')
@@ -643,7 +643,7 @@ export default {
       }
       else {
         this.$axios.patch('/api/students',{
-            is_verified: this.checkVerification(),
+            is_verified: this.checkVerification() && this.is_verified,
             first_name : this.first_name,
             last_name : this.last_name,
             full_name : this.full_name,
@@ -675,7 +675,7 @@ export default {
         })
           .then( response =>{
               console.log("form update",response.data);
-              if (! this.checkVerification()) {
+              if (! this.checkVerification() || !this.is_verified) {
                 this.snackbar.text = "Changes detected in critical inforamtion. Submitted for approval";
                 this.snackbar.type = "alert";
               } else {
