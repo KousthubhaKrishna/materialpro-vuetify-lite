@@ -55,16 +55,17 @@
               </v-card-text>
 
 
-              <v-card-subtitle v-if="placement.job_description.length != 0"> Job Description</v-card-subtitle>
+              <v-card-subtitle v-if="placement.job_description.length != 0" style="white-space: pre-line;"> Job Description</v-card-subtitle>
               <v-card-text  class="font-weight-regular">{{ placement.job_description }}</v-card-text>
             
         </v-row>
-          <v-row>
+          <v-row v-if="($ROLES.STUDENT == user.role || user.role == $ROLES.PC) && firstSnap">
             <v-card-actions>
-              <p v-if="isRegistered"> Already Registered for this Placement </p>
-              <div  v-if="($ROLES.STUDENT == user.role || user.role == $ROLES.PC) && !isRegistered ">
-              <Register></Register>
-              <Counter :lastDate="lastDate" @timerOut="timerOut"></Counter>
+              <p class="red--text pl-5 pt-5" v-if="!isEligible"><v-icon color="red" >mdi-alert-circle </v-icon> Not Eligible for this Placement </p>
+              <p class="green--text pl-5 pt-5" v-if="isRegistered"><v-icon color="green" >mdi-checkbox-marked-circle-outline</v-icon> Already Registered for this Placement </p>
+              <div  v-if="!isRegistered && isEligible ">
+                <Register v-if="!timeOut"></Register>
+                <Counter :lastDate="lastDate"></Counter>
               </div>
             </v-card-actions>
           </v-row>
@@ -233,12 +234,10 @@
             <v-row class="ma-3">
                 <v-col col="12" v-for="snap in snaps" :key="snap._id" sm="4">
                   <v-card elevation="1" outlined @click="openSnap(snap._id)">
-                    <v-card-title>{{snap.snap_name}}
-                      <v-spacer></v-spacer>
-                      <v-btn icon>
-                      <v-icon @click="deleteItem(snap._id,'snap')">mdi-delete</v-icon>
-                    </v-btn> 
-                    </v-card-title>
+                    <v-spacer></v-spacer>
+                    <v-card-text class="font-weight-medium black--text">{{snap.snap_name}}
+                      <v-icon @click="deleteItem(snap._id,'snap')" right>mdi-delete</v-icon>
+                    </v-card-text>
                     <!-- <v-card-text>{{ snap.type_of_data}}</v-card-text> -->
                     
                   </v-card>
@@ -246,7 +245,7 @@
             </v-row>
 
                 <v-row v-for="snap in snaps" :key="snap._id">
-                  <DisplayDatasnapshot v-if="disable == snap._id" :snapId="snapId" ></DisplayDatasnapshot>
+                  <DisplayDatasnapshot v-if="disable == snap._id" :snapId="snapId" :isPlaced="isPlaced" ></DisplayDatasnapshot>
                 </v-row>
         </v-sheet>
 </v-container>
@@ -298,6 +297,9 @@ import { EventBus } from '@/event-bus.js'
       lastDate:Date,
       isRegistered: false,
       firstSnap:false,
+      isPlaced:false,
+      isEligible: false,
+      timeOut: false,
     }),
 
       watch: {
@@ -307,7 +309,11 @@ import { EventBus } from '@/event-bus.js'
       dialogDelete (val) {
         val || this.closeDelete()
       },
+      isRegistered(val){
+        val || this.isAlreadyRegistered();
+      },
     },
+
     created(){
 
       const access_token = window.$cookies.get("jwt");
@@ -338,18 +344,18 @@ import { EventBus } from '@/event-bus.js'
           this.placement = value 
         });
       EventBus.$on('snaps', (value) => {
-        console.log(value);
           this.snaps.push(value);
+        });
+      EventBus.$on('placed_snap', (value) => {
+          this.snaps.push(value); 
+        });
+      EventBus.$on('timerOut', (value) => {
+          this.timeOut = true;
         });
     },
      methods:{
        
-       timerOut(){
-         this.isRegistered = true;
-       },
-
       isAlreadyRegistered(){
-          // console.log(this.snapData.data['user_email'].has(this.user.user_email))
         for (let index = 0; index < this.snap.data.length; index++) {
           if(this.snap.data[index]['user_email'] == this.user.user_email){
             this.isRegistered = true;
@@ -363,7 +369,8 @@ import { EventBus } from '@/event-bus.js'
           .then(response=>{
               this.snap = response.data;
               this.lastDate = this.snap.last_date; 
-              this.isAlreadyRegistered();              
+              this.isAlreadyRegistered();   
+              this.isValid();           
           })
           .catch(error =>{
             if(error.message=="Invalid Id"){
@@ -386,6 +393,10 @@ import { EventBus } from '@/event-bus.js'
             if(this.placement.register_snap != null){
               this.firstSnap=true;
             }
+            if(this.placement.placed_students_snap != null)
+            this.isPlaced = true;
+
+            this.isValid();
 
         })
         .catch(error =>{
@@ -394,8 +405,8 @@ import { EventBus } from '@/event-bus.js'
       },
 
       closeDelete () {
-      this.dialogDelete = false     
-    },
+        this.dialogDelete = false     
+      },
 
        getAnnouncements(){
           axios.get('/api/announcements/'+this.$route.params.id)
@@ -407,6 +418,26 @@ import { EventBus } from '@/event-bus.js'
               console.log(error);
           })
        },
+
+        isValid(){
+
+          console.log(this.snap);
+
+          axios.get('/api/students/myProfile')
+          .then(res => {
+
+              if( res.data.education.cgpa >= this.placement.eligibility.cgpa 
+                && res.data.education.backlogs <= this.placement.eligibility.backlogs
+                && this.placement.eligibility.branches.includes((res.data.basic_info.branch).toUpperCase())
+                && this.placement.placement_batch == res.data.basic_info.placement_batch){
+                  
+                  this.isEligible = true;
+              }
+          })
+          .catch(error => {
+            console.log(error);
+          })      
+        },
 
         closeDialog(){
           this.dialog = false; 

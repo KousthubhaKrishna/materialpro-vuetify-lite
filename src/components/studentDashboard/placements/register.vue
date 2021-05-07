@@ -1,5 +1,5 @@
 <template>
-<div>
+<div class="pl-6">
     <v-dialog
       v-model="dialog"
       persistent
@@ -199,7 +199,6 @@ import axios from 'axios';
         })
         },
 
-
         register(){
 
           console.log(this.extra_fields);
@@ -209,7 +208,8 @@ import axios from 'axios';
           console.log(isValid);
           if(isValid){
               this.dialog = false;
-              this.fields['user_email'] = this.user.user_email; 
+              this.fields['user_email'] = this.user.user_email;
+              this.fields['student_Id'] = this.user._id; 
               axios.patch('/api/snaps/add_data/'+this.snapData._id, {...this.fields,...this.extra_fields})
               .then(response =>{
               console.log("registered successfully",response.data);

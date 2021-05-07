@@ -6,7 +6,6 @@
         :aspect-ratio="16/10"
         max-height="280"
         width = "100%"
-        cover
         :src="company.photo_url"
 
         ></v-img>
@@ -14,7 +13,7 @@
           <v-card-title style="font-size:3rem;font:roboto;font-weight:300" class="ma-5 pt-10" >
               {{company.company_name}}
           </v-card-title>
-          <v-card-text class="ma-5 pa-4 font-weight-medium "  style="font-size:0.9rem;font:timesnewroman;">
+          <v-card-text class="ma-5 pa-4 font-weight-medium "  style="font-size:0.9rem;white-space: pre-line;">
               {{company.description}}
           </v-card-text>
       </v-card>
@@ -88,6 +87,7 @@ export default {
       const access_token = window.$cookies.get("jwt");
       let tokens = JSON.parse(atob(access_token.split(".")[1]));
       this.user = tokens;
+      console.log(this.user);
 
       axios.get('/api/company/'+this.$route.params.id)
       .then(response=>{

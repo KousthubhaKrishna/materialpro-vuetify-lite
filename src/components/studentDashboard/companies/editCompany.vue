@@ -7,15 +7,15 @@
     >
       <template v-slot:activator="{ on, attrs }">
          <v-btn
-              class="ma-1"
+              class="mr-1"
               color="gray"
-              plain
+              icon
               elevation="0"
               v-bind="attrs"
               v-on="on"
             >
-            <v-icon small>mdi-pencil</v-icon>
-            Edit
+            <v-icon>mdi-pencil</v-icon>
+
         </v-btn>
         
       </template>

@@ -18,34 +18,47 @@
           <v-row justify="center" align="center" class="mt-10">
              <p v-if="filteredCompanies.length == 0"> No Results Found </p>
             </v-row>
-         <v-row align='center'>
-          <v-col cols="12" v-for="(company,index) in filteredCompanies" :key="index" sm="4 ">
+         <v-row align='center' class="mx-10">
+          <v-col cols="12" v-for="(company,index) in filteredCompanies" :key="index" sm="6">
             <v-hover
               v-slot="{ hover }"
               open-delay="200"
             >
-            <v-card
+            <v-sheet
             :elevation="hover ? 5 : 1"
             :class="{ 'on-hover': hover }"
             outlined 
-            @click="openPlacements(company._id)">
-            <v-card-text class="font-weight-bold text-center" v-text="company.company_name"></v-card-text>
-            <v-card-actions v-if="$PERMISSIONS.MED.has(user.role)">
-              <v-spacer></v-spacer>
-              <EditCompany :company = "company"></EditCompany>
-              <v-spacer></v-spacer>
-              <v-btn
-                class="ma-1"
-                color="gray"
-                elevation="0"
-                @click="deleteCompany(company._id)"
-              >
-              <v-icon small>mdi-delete</v-icon>
-                Delete
-              </v-btn>
-              <v-dialog v-model="dialogDelete" max-width="500px">
+            >
+            <v-row >
+              <v-col cols="12" sm="8">
+            <p class="font-weight-medium text-center pa-2 mb-0" @click="openPlacements(company._id)"> {{ company.company_name }} </p>
+              </v-col>
+
+              <v-col col="12" sm="4" class="text-right">
+                
+                <div v-if="$PERMISSIONS.MED.has(user.role)">
+                  <v-spacer></v-spacer>
+                  <EditCompany :company = "company" class="d-inline"></EditCompany>
+                  <v-btn
+                    class="d-inline mr-2"
+                    icon
+                    color="gray"
+                    elevation="0"
+                    @click="deleteCompany(company._id)"
+                  >
+                  <v-icon>mdi-delete</v-icon>
+
+                  </v-btn> 
+                </div>
+              </v-col>
+            </v-row>
+          </v-sheet>
+          </v-hover>
+          </v-col>
+      </v-row>
+      <v-dialog v-model="dialogDelete" max-width="500px" class="pa-3">
               <v-card>
-                <v-card-title>Are you sure you want to delete this Comapny?</v-card-title>
+                <v-card-title class="font-weight-regular text--center" style="font-size:1rem;">Are you sure you want to delete this Company?</v-card-title>
                 <v-card-actions>
                   <v-spacer></v-spacer>
                   <v-btn color="blue darken-1" text @click="closeDelete">Cancel</v-btn>
@@ -54,14 +67,6 @@
                 </v-card-actions>
               </v-card>
           </v-dialog>
-              <v-spacer></v-spacer>
-
-            </v-card-actions>
-
-          </v-card>
-          </v-hover>
-          </v-col>
-      </v-row>
         </div>
     </div>
 </template>
@@ -114,7 +119,6 @@ export default {
       deleteCompanyConfirm(){
         axios.delete('/api/company/'+this.company_id)
         .then(response=>{
-            console.log(response.data);
             this.getCompanies();
         })
         .catch(error =>{
@@ -126,7 +130,6 @@ export default {
       deleteCompany(data){
         this.dialogDelete = true,
         this.company_id = data;
-        console.log("enetre")
       },
 
       closeDelete(){

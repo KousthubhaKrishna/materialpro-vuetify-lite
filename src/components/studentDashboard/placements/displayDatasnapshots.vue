@@ -14,8 +14,12 @@
 
   <div>
     <v-data-table
+      v-model= "selected"
+      @input="enterSelect()"
       :headers="dataHeaders"
       :items="data"
+      item-key="roll_number"
+      show-select
       class="elevation-1"
 
     >
@@ -101,7 +105,7 @@
           </v-dialog>
           <v-dialog v-model="dialogDelete" max-width="500px">
             <v-card>
-              <v-card-title>Are you sure you want to delete this item?</v-card-title>
+              <v-card-title>Are you sure you want to delete the snap?</v-card-title>
               <v-card-actions>
                 <v-spacer></v-spacer>
                 <v-btn color="blue darken-1" text @click="closeDelete">Cancel</v-btn>
@@ -127,15 +131,10 @@
           mdi-delete
         </v-icon>
       </template>
-      <template v-slot:no-data>
-        <v-btn
-          color="primary"
-          @click="reset"
-        >
-          Reset
-        </v-btn>
-      </template>
+    
     </v-data-table>
+    <div><AddDatasnapshot :first="isFirst"></AddDatasnapshot></div>
+    <v-btn v-if="!isPlacedSnap && !isPlaced"  @click="createPlacedData">create placed students snap</v-btn>
   </div>
 
 </v-col>
@@ -143,14 +142,17 @@
 
 <script>
 import axios from 'axios'
+import { EventBus } from '@/event-bus.js'
 
   export default {
     name: "Displaysnap",
 
-    props:['snapId'],
+    props:['snapId', 'isPlaced'],
 
     data: () => ({
       snap:{},
+      newSnap:{},
+      newSnapData:"",
       error:"",
       dialog: false,
       dialogDelete: false,
@@ -158,10 +160,13 @@ import axios from 'axios'
       dataHeaders:[],
       data:[],
       fields:[],
-
+      selected:[],
       editedIndex: -1,
       editedItem: {},
       defaultItem: {},
+      isPlacedSnap: false,
+      first:false,
+      placement:{},
       rules:{
           required: value => !!value || " ",
           number: v => /^\d+$/.test(v)||'This field only accept numbers',
@@ -186,6 +191,10 @@ import axios from 'axios'
 
     created(){
       this.getSnapData(this.snapId);
+      EventBus.$on('snaps', (value) => {
+        console.log(value);
+          this.addData(value);
+        });
     },
 
     methods: {
@@ -202,8 +211,12 @@ import axios from 'axios'
         this.editedItem[element]=""
         this.fields.push(element);
       });
+      this.editedItem['user_email']=""
+      this.editedItem['student_Id']=""
       this.dataHeaders.push({ text: 'Actions', value: 'actions', sortable: false })
       this.defaultItem = this.editedItem;
+
+      console.log(this.isPlaced);
     },
 
     reset(){
@@ -218,6 +231,11 @@ import axios from 'axios'
        axios.get('/api/snaps/'+val)
       .then(response=>{
           this.snap = response.data;
+          if(this.snap.type_of_data == "Placed Students")
+          {
+            this.isPlacedSnap = true;
+          }
+          this.newSnap = response.data;
           this.data = this.snap.data;
           this.initialize();
           console.log("snap",this.snap);
@@ -242,7 +260,7 @@ import axios from 'axios'
     },
 
     deleteItemConfirm () {
-      this.data.splice(this.editedIndex, 1)
+      console.log("delete");
      
       axios.patch('/api/snaps/remove_data/'+this.snap._id, this.data[this.editedIndex])
       .then(response =>{
@@ -251,6 +269,7 @@ import axios from 'axios'
       .catch(error =>{
           console.log(error)
       })
+      this.data.splice(this.editedIndex, 1)
      
       this.closeDelete()
     },
@@ -295,6 +314,7 @@ import axios from 'axios'
           if(isValid){
             // this.dialog=false;
               this.editedItem['user_email'] = " "; 
+              this.editedItem['student_Id'] = " ";
               axios.patch('/api/snaps/add_data/'+this.snap._id, this.editedItem)
               .then(response =>{
               console.log("registered successfully",response.data);
@@ -311,7 +331,63 @@ import axios from 'axios'
       }
       this.close()
     },
+
+    addData(data){
+          axios.patch('/api/snaps/add_snap/'+data._id, this.newSnapData)
+          .then(response =>{
+
+          })
+          .catch(error =>{
+          console.log(error)
+          })
+      },
+
+    createPlacedData(){
+      let newSnap = this.newSnap;
+      newSnap.type_of_data = "Placed Students";
+      newSnap.snap_name = "placed_Students_list";
+      newSnap['isFirst'] = false;
+            
+      axios.post('/api/snaps/'+this.$route.params.id, newSnap)
+      .then(response =>{
+
+          this.placement['placed_students_snap'] = response.data._id
+
+          EventBus.$emit('placed_snap', response.data);
+
+          axios.patch('/api/snaps/add_snap/'+response.data._id, this.newSnapData)
+          .then(res =>{
+
+              this.isPlacedSnap = true;
+
+              axios.patch('/api/placements/'+this.$route.params.id,  this.placement)
+              .then(resp =>{
+
+              })
+              .catch(error =>{
+              console.log(error)
+              })
+
+          })
+          .catch(error =>{
+          console.log(error)
+          })
+                
+      })
+      .catch(error =>{
+          console.log(error)
+      })
+      console.log(this.selected);
+    },
+
+    enterSelect(){
+      this.newSnapData = this.selected.map(e => e);
+    }
+
   },
+   components:{
+      AddDatasnapshot: () => import('@/components/studentDashboard/placements/addDatasnapshot'),
+    }
 
   }
 </script>

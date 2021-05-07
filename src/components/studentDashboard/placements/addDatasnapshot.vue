@@ -217,7 +217,6 @@ import { EventBus } from '@/event-bus.js'
           this.$refs.form.reset();
         },
 
-
         addDatasnapshot(){
             let isValid = this.$refs.form.validate(true);
             console.log(isValid);
@@ -228,7 +227,7 @@ import { EventBus } from '@/event-bus.js'
                 this.fields.forEach(element => {
                   this.snapData.fields.push(this.set[element]);
                 });
-                console.log(this.snapData.fields);
+
                 this.snapData.extra_fields = this.extra_fields;
                 axios.post('/api/snaps/'+this.$route.params.id, this.snapData)
                 .then(response =>{

@@ -9,12 +9,14 @@
         {{ displaySeconds }}
             </span></p>
         </div>
-        <h5 v-else>Registrations Closed </h5>
+        <h5 class="red--text pl-6 font-weight-regular" style="font-size:1rem;"  v-else>Registrations Closed <v-icon color="red">mdi-alert-circle </v-icon></h5>
 
     </v-container>
 </template>
 
 <script>
+
+import { EventBus } from '@/event-bus.js'
 
 export default {
     name: "Counter",
@@ -60,7 +62,7 @@ export default {
                     clearInterval(timer);
                     this.expired = true; 
                     this.loaded = true;
-                    this.$emit('timerOut');
+                    EventBus.$emit('timerOut',0);
                     return ;
                 }
 
