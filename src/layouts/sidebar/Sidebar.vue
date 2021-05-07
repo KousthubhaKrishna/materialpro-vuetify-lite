@@ -15,7 +15,7 @@
       <!---USer Area -->
       <v-list-item two-line class="secondary" dark>
         <v-list-item-avatar>
-          <img :src="userData.photo_url || 'https://randomuser.me/api/portraits/men/81.jpg'" />
+          <img :src="userData.photo_url || 'https://www.attendit.net/images/easyblog_shared/July_2018/7-4-18/b2ap3_large_totw_network_profile_400.jpg'" />
         </v-list-item-avatar>
         <v-list-item-content>
           <v-list-item-title> {{ userData.basic_info.full_name }} </v-list-item-title>
@@ -100,7 +100,8 @@ export default {
         {
           title: "Profile",
           icon: "mdi-account-circle",
-          to: "/dashboard/profile"
+          to: "/dashboard/profile",
+          permissions: new Set([this.$ROLES.STUDENT, this.$ROLES.PC]),
         },
         {
           title: "Placements",

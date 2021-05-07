@@ -15,8 +15,8 @@
     />
     <v-spacer />
     <!---right part -->
-    <v-btn dark color="success" href="https://www.wrappixel.com/templates/materialpro-vuetify-admin/">Upgrade to Pro</v-btn>
-    <v-menu bottom left transition="scale-transition">
+    <v-btn dark color="alert" @click="logout"> Logout </v-btn>
+    <!--<v-menu bottom left transition="scale-transition">
       <template v-slot:activator="{ on }">
         <v-btn dark icon v-on="on">
           <v-icon>mdi-dots-vertical</v-icon>
@@ -28,7 +28,7 @@
           <v-list-item-title>{{ item.title }}</v-list-item-title>
         </v-list-item>
       </v-list>
-    </v-menu>
+    </v-menu>-->
   </v-app-bar>
 </template>
 <script>
@@ -54,18 +54,7 @@ export default {
       { title: "My Balance" },
       { title: "Inbox" },
       { title: "Account Setting" },
-      { title: "Logout" ,method : () => {
-        axios
-        .delete("/api/logout")
-        .then(res => {
-          if (res.status == 200) {
-            router.push({ name: "Home" });
-          }
-        })
-        .catch(err => {
-          if (err.response.data.message) console.log(err.response.data.message);
-        });
-      }}
+      { title: "Logout", method: this.logout()}
     ],
     href() {
       return undefined;
@@ -79,7 +68,20 @@ export default {
   methods: {
     ...mapMutations({
       setSidebarDrawer: "SET_SIDEBAR_DRAWER"
-    })
+    }),
+    logout() {
+      console.log("jbjb");
+        axios
+        .delete("/api/logout")
+        .then(res => {
+          if (res.status == 200) {
+            router.push({ name: "Home" });
+          }
+        })
+        .catch(err => {
+          if (err.response.data.message) console.log(err.response.data.message);
+        });
+      }
   }
 };
 </script>

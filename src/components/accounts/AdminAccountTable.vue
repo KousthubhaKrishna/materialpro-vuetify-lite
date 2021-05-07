@@ -64,16 +64,6 @@
             v-model="newAccount.user_email"
             :rules="[rules.required,rules.email]"
           ></v-text-field>
-          <v-text-field
-            :rules="[rules.required, rules.min]"
-            counter
-            minLength="8"
-            :append-icon="passShow ? 'mdi-eye' : 'mdi-eye-off'"
-            :type="passShow ? 'text' : 'password'"
-            label="Password"
-            v-model="newAccount.password"
-            @click:append="passShow = !passShow"
-          ></v-text-field>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
@@ -104,7 +94,6 @@
       return {
         newAccount: {
           user_email:"",
-          password:""
         },
         addAccountDialog: false,
         passShow: false,
@@ -173,7 +162,6 @@
       openAddAccountDialog(account) {
         this.newAccount = {
           user_email:"",
-          password:""
         };
         this.addAccountDialog = true;
       },
@@ -204,7 +192,7 @@
         this.dialogDelete = false;
       },
       deleteAccountOperation() {
-      this.$axios.delete('/api/admins/'+this.deleteAccount._id)
+      this.$axios.delete('/api/deleteAdmin/'+this.deleteAccount._id)
         .then( response => {
           if(response.status == 200) {
             this.snackbar.text = "Deleted "+this.deleteAccount.user_email;

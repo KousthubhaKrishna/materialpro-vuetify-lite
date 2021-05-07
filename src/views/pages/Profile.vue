@@ -10,7 +10,7 @@
           <v-card>
             <v-card-text class="text-center pa-7">
               <img
-                :src="photo_url || 'https://www.tenforums.com/geek/gars/images/2/types/thumb_14400082930User.png'"
+                :src="photo_url || 'https://www.attendit.net/images/easyblog_shared/July_2018/7-4-18/b2ap3_large_totw_network_profile_400.jpg'"
                 alt="user"
                 width="150px"
                 class="img-fluid rounded-circle shadow-sm"
@@ -32,6 +32,9 @@
                   mdi-alert-circle-outline
                 </v-icon>
               </h4>
+              <h2 class="mt-2 title blue--text text--darken-2 font-weight-regular">
+                {{ primary_email }}                 
+              </h2>
             </v-card-text>
             <!-- <input type="button" @click="disabled = (disabled + 1) % 2" ></input> -->
             <v-card-actions>
@@ -157,7 +160,7 @@
                 v-model="primary_email"
                 label="primary email"
                 :rules="emailRules"
-                :disabled="disabled"
+                :disabled="true"
                 ></v-text-field>
               <v-text-field
                 type="email"
@@ -411,13 +414,11 @@
           <v-text-field
             v-model="photo_url"
             label="Photo URL"
-            :rules="generalRules"
             :disabled="disabled"
           ></v-text-field>
           <v-text-field
             v-model="resume_url"
             label="Resume URL"
-            :rules="generalRules"
             :disabled="disabled"
           ></v-text-field>
         </v-col>
@@ -468,7 +469,7 @@ export default {
     state:"",
     zipcode:"",
     date_of_birth:"",
-    photo_url: "",
+    photo_url: undefined,
     resume_url: "",
     valid: true,
     menu: false,
@@ -510,6 +511,7 @@ export default {
     const access_token = window.$cookies.get("jwt");
     let tokens = JSON.parse(atob(access_token.split(".")[1]));
     this.role = tokens.role;
+    this.account = tokens;
         this.$axios.get('/api/students/myProfile')
         .then( response => {
             this.posts = response.data;
@@ -526,7 +528,7 @@ export default {
             this.branch = response.data.basic_info.branch;
             this.section = response.data.basic_info.section;
             this.placement_batch = response.data.basic_info.placement_batch;
-            this.primary_email = response.data.contact_info.primary_email;
+            this.primary_email = this.account.user_email;
             this.secondary_email = response.data.contact_info.secondary_email;
             this.mobile = response.data.contact_info.mobile;
             this.secondary_mobile = response.data.contact_info.secondary_mobile;

@@ -1,5 +1,5 @@
 import axios from "axios";
-const baseURL = "https://cdc-file-server.herokuapp.com";
+const baseURL = "http://localhost:8888";
 
 class UploadFilesService {
     upload(company, file, onUploadProgress) {

@@ -48,7 +48,8 @@
 
     <v-card v-if="editor.show" class="mb-5">
       <v-alert prominent dismissable text color="success">
-        <h2> Mardown Editor </h2>
+        <h3 class="black--text"> Mardown Editor </h3>
+        <a href="https://guides.github.com/pdfs/markdown-cheatsheet-online.pdf"> Guide for markdown </a>
         <v-row>
             <v-col>
             <v-text-field
