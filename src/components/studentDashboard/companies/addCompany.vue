@@ -28,18 +28,7 @@
              </v-alert>
 
             <v-row>
-              <v-col
-                cols="12"
-                sm="5"
-                class="pa-1"
-              >
-                <v-text-field
-                  ref="company_id"
-                  label="Company ID*"
-                  v-model="companyData.companyId"
-                  :rules="[rules.required]"
-                ></v-text-field>
-              </v-col>
+              
               <v-col
                 cols="12"
                 sm="7"
@@ -109,7 +98,6 @@ export default {
     data: () => ({
       dialog: false,
       companyData:{
-          companyId:"",
           company_name:"",
           photo_url:"",
           description:""

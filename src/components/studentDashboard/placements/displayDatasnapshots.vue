@@ -117,13 +117,13 @@
         </v-toolbar>
       </template>
       <template v-slot:[`item.actions`]="{ item }">
-        <v-icon
+        <!-- <v-icon
           small
           class="mr-2"
           @click="editItem(item)"
         >
           mdi-pencil
-        </v-icon>
+        </v-icon> -->
         <v-icon
           small
           @click="deleteItem(item)"
@@ -133,8 +133,10 @@
       </template>
     
     </v-data-table>
-    <div><AddDatasnapshot :first="isFirst"></AddDatasnapshot></div>
-    <v-btn v-if="!isPlacedSnap && !isPlaced"  @click="createPlacedData">create placed students snap</v-btn>
+    <div class="text-right ma-4">
+      <AddDatasnapshot :first="isFirst" class="d-inline"></AddDatasnapshot>
+    <v-btn color="green" class="d-inline" v-if="!isPlacedSnap && !isPlaced"  @click="createPlacedData">create placed students snap</v-btn>
+    </div>
   </div>
 
 </v-col>
@@ -177,6 +179,12 @@ import { EventBus } from '@/event-bus.js'
       formTitle () {
         return this.editedIndex === -1 ? 'New Item' : 'Edit Item'
       },
+
+      isPlacedSnap(){
+        return this.snap.type_of_data == "Placed Students" ? true : false;
+      }
+
+
     },
 
     watch: {
@@ -216,7 +224,6 @@ import { EventBus } from '@/event-bus.js'
       this.dataHeaders.push({ text: 'Actions', value: 'actions', sortable: false })
       this.defaultItem = this.editedItem;
 
-      console.log(this.isPlaced);
     },
 
     reset(){
@@ -238,8 +245,6 @@ import { EventBus } from '@/event-bus.js'
           this.newSnap = response.data;
           this.data = this.snap.data;
           this.initialize();
-          console.log("snap",this.snap);
-          console.log("snap data",this.data);
       })
       .catch(error =>{
           console.log(error);
@@ -362,12 +367,10 @@ import { EventBus } from '@/event-bus.js'
 
               axios.patch('/api/placements/'+this.$route.params.id,  this.placement)
               .then(resp =>{
-
               })
               .catch(error =>{
               console.log(error)
               })
-
           })
           .catch(error =>{
           console.log(error)

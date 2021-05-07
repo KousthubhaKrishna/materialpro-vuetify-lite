@@ -1,58 +1,85 @@
 <template>
   <div class = "mx-6" >
-         <v-row justify='end' style="width:100%">
-           <v-col cols="5">
-             <v-text-field
+
+      <v-card class="mb-5">
+      <v-toolbar
+        flat
+        >
+        <v-row>
+          <v-col align-self="center">
+            <h5>
+              <v-icon
+                class="mr-2"
+                color="primary">
+                mdi-filter
+              </v-icon>
+              Filters 
+            </h5>
+          </v-col>
+         
+          <v-col>
+          <v-text-field
               v-model="search"
               append-icon="mdi-magnify"
               label="  Search companies"
               hide-details
               single-line
             ></v-text-field>
-           </v-col>
-         </v-row> 
+         
+          </v-col>
+           <v-col  v-if="$PERMISSIONS.MED.has(user.role)"> 
+            <AddCompany></AddCompany>
+          </v-col> 
+        </v-row>
+      </v-toolbar>
+    </v-card>
+
+
+
+
+        
         
         <v-divider></v-divider>
 
         <div style="width:100%;height:100%" >
-          <v-row justify="center" align="center" class="mt-10">
-             <p v-if="filteredCompanies.length == 0"> No Results Found </p>
+          <v-row justify="center" align="center" class="mt-10" v-if="filteredCompanies.length == 0">
+             <p > No Results Found </p>
             </v-row>
-         <v-row align='center' class="mx-10">
-          <v-col cols="12" v-for="(company,index) in filteredCompanies" :key="index" sm="6">
+         <v-row align='center' class="mx-10" v-else>
+          <v-col cols="12" v-for="(company,index) in filteredCompanies" :key="index" sm="3">
             <v-hover
               v-slot="{ hover }"
               open-delay="200"
             >
-            <v-sheet
-            :elevation="hover ? 5 : 1"
-            :class="{ 'on-hover': hover }"
-            outlined 
-            >
-            <v-row >
-              <v-col cols="12" sm="8">
-            <p class="font-weight-medium text-center pa-2 mb-0" @click="openPlacements(company._id)"> {{ company.company_name }} </p>
-              </v-col>
 
-              <v-col col="12" sm="4" class="text-right">
-                
-                <div v-if="$PERMISSIONS.MED.has(user.role)">
-                  <v-spacer></v-spacer>
-                  <EditCompany :company = "company" class="d-inline"></EditCompany>
-                  <v-btn
-                    class="d-inline mr-2"
-                    icon
-                    color="gray"
-                    elevation="0"
-                    @click="deleteCompany(company._id)"
-                  >
-                  <v-icon>mdi-delete</v-icon>
+              <v-card
+              :elevation="hover ? 5 : 1"
+              :class="{ 'on-hover': hover }"
+              class="pa-0"
+             >
+              <v-card-actions class="pa-0">
 
-                  </v-btn> 
-                </div>
+               <v-row class="pa-1"> 
+               <v-col cols="12" sm="6" @click="openPlacements(company._id)"> <p class="mb-0 pl-2">{{company.company_name}}</p></v-col>
+              
+              <v-col cols="12" sm="6" v-if="$PERMISSIONS.MED.has(user.role)" class="text-right">
+                <v-spacer></v-spacer>
+                    <EditCompany :company = "company" class="d-inline"></EditCompany>
+                      <v-btn
+                        class="d-inline mr-1"
+                        icon
+                        color="gray"
+                        elevation="0"
+                        @click="deleteCompany(company._id)"
+                      >
+                      <v-icon>mdi-delete</v-icon>
+
+                      </v-btn> 
               </v-col>
-            </v-row>
-          </v-sheet>
+               </v-row>
+              </v-card-actions>
+            </v-card>
+           
           </v-hover>
           </v-col>
       </v-row>
@@ -154,6 +181,7 @@ export default {
 
   components:{
       EditCompany: () => import('@/components/studentDashboard/companies/editCompany'),
+      AddCompany: () => import('@/components/studentDashboard/companies/addCompany'),
   }
   }
 </script>

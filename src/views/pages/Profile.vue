@@ -10,7 +10,7 @@
           <v-card>
             <v-card-text class="text-center pa-7">
               <img
-                :src="photo_url || 'https://upload.wikimedia.org/wikipedia/commons/2/29/Loader.gif'"
+                :src="photo_url || 'https://www.tenforums.com/geek/gars/images/2/types/thumb_14400082930User.png'"
                 alt="user"
                 width="150px"
                 class="img-fluid rounded-circle shadow-sm"
@@ -115,7 +115,7 @@
                   md="6"
                   >
                   <v-select 
-                    :items="branch" 
+                    :items="branchItems" 
                     label="branch"  
                     :disabled="disabled" 
                     :rules="generalRules"
@@ -312,8 +312,9 @@
                   md="6"
                   >
                   <v-select 
-                    :items="gender" 
-                    label="Gender"  
+                    :items="genderItems" 
+                    label="Gender"
+                    :menu-props="{openOnClick: 'true'} " 
                     :disabled="disabled" 
                     :rules="generalRules"
                     v-model="gender">
@@ -494,8 +495,8 @@ export default {
           v => (v>=0) || 'This field is required'
       ],
 
-    gender:["Female","Male","Other"],
-    branch: ["CSE", "ECE", "IT","Civil"]
+    genderItems:["Female","Male","Other"],
+    branchItems: ["cse", "ece", "it","civil"]
 
   }),
   components: {},
@@ -631,8 +632,8 @@ export default {
         })
           .then( response =>{
               console.log("form submission",response.data)
-              this.snackbar.type = "green";
-              this.snackbar.text = "Updated your profile";
+              this.snackbar.type = "alert";
+              this.snackbar.text = "Submitted your profile for approval";
               this.snackbar.show = true;
               // this.updateCurrentStudentInfo();
               this.initialize();
@@ -720,5 +721,11 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.v-select .dropdown-menu {
+  display:block;
+}
+</style>
 
 

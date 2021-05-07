@@ -8,10 +8,13 @@
         </v-col>
     </v-row>
     
-    <v-row>
-        <v-col cols="12" sm="4">Job Role</v-col>
-        <v-col cols="12" sm="4">Job Type</v-col>
-        <v-col cols="12" sm="4">Company Name</v-col>
+    <v-row class = "blue--text">
+        <v-col cols="12" sm="2">Job Role</v-col>
+        <v-col cols="12" sm="2">Job Type</v-col>
+        <v-col cols="12" sm="2">Company Name</v-col>
+        <v-col cols="12" sm="2">Batch</v-col>
+        <v-col cols="12" sm="2">Branch</v-col>
+        <v-col cols="12" sm="2">Package</v-col>
     </v-row>
     <v-divider></v-divider>
       <v-row v-for="placement in placements" :key="placement._id">
@@ -23,33 +26,18 @@
                 :elevation="hover ? 10 : 1"
                 :color="hover ? '#ECF0F1' : 'white'"
                 :class="{ 'on-hover': hover }">
-                  <v-row>
-                  <v-col cols="12" sm="4">{{ placement.job_role }}</v-col>
-                  <v-col cols="12" sm="4">{{ placement.job_type }}</v-col>
-                  <v-col cols="12" sm="4">{{ placement.company_id.company_name }}</v-col>
+                  <v-row class="pl-4">
+                  <v-col cols="12" sm="2">{{ placement.job_role }}</v-col>
+                  <v-col cols="12" sm="2">{{ placement.job_type }}</v-col>
+                  <v-col cols="12" sm="2">{{ placement.company_id.company_name }}</v-col>
+                  <v-col cols="12" sm="2">{{ placement.placement_batch }}</v-col>
+                  <v-col cols="12" sm="2">{{ placement.eligibility.branches }}</v-col>
+                  <v-col cols="12" sm="2">{{ placement.package }}</v-col>
+
                   </v-row>
               </v-sheet>
           </v-hover>
       </v-row>
-        <!-- <v-list flat>
-        <v-list-item-group
-            v-model="selectedItem"
-            color="primary"
-        >
-            <v-list-item
-            v-for="(item, i) in placements"
-            :key="i"
-            >
-
-            <v-list-item-content>
-                <v-list-item-title v-text="item.job_role"></v-list-item-title>
-                <v-list-item-title v-text="item.job_type"></v-list-item-title>
-                <v-list-item-title v-text="item.company_id.company_name"></v-list-item-title>
-            </v-list-item-content>
-            </v-list-item>
-        </v-list-item-group>
-        </v-list> -->
-
       </v-sheet>
   </v-container>
 </template>

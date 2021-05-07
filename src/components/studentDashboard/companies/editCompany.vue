@@ -32,18 +32,7 @@
              </v-alert>
 
             <v-row>
-              <v-col
-                cols="12"
-                sm="5"
-                class="pa-1"
-              >
-                <v-text-field
-                  ref="company_id"
-                  label="Company ID*"
-                  v-model="companyData.company_id"
-                  :rules="[rules.required]"
-                ></v-text-field>
-              </v-col>
+             
               <v-col
                 cols="12"
                 sm="7"
@@ -116,7 +105,6 @@ export default {
       dialog: false,
       id:"",
       companyData:{
-          company_id:"",
           company_name:"",
           photo_url:"",
           description:""
@@ -133,7 +121,6 @@ export default {
     methods:{
         intialise(){
             this.id = this.company._id;
-            this.companyData.companyId = this.company.company_id;
             this.companyData.company_name = this.company.company_name;
             this.companyData.photo_url = this.company.photo_url;
             this.companyData.description = this.company.description;
