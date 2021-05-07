@@ -1,9 +1,6 @@
 <template>
   <v-container fluid class="down-top-padding">
     <v-row>
-      <Vision></Vision>
-    </v-row>
-    <v-row>
       <Team></Team>
     </v-row>
     <v-row>
@@ -262,7 +259,6 @@
         </v-card>
       </v-col>
     </v-row>
-    <Footer></Footer>
     <v-dialog
       v-model="dialog"
       persistent
@@ -403,8 +399,7 @@ export default {
     padding2: 0,
     value2: [1, 2, 5, 9, 5, 10, 3, 5, 1, 8, 2, 9, 4],
     width2: 4,
-    tasks: [
-      {
+    tasks: [{
         done: false,
         text: "Check emails of Mr.Shah"
       },
@@ -416,16 +411,16 @@ export default {
     task: null,
     selected: [2],
     announcements: [],
-    announcement:{
-        title:"",
-        message:"",
-        date:"",  
-        type: "",
-      },
-    dialog:false,
-    error:"",
+    announcement: {
+      title: "",
+      message: "",
+      date: "",
+      type: "",
+    },
+    dialog: false,
+    error: "",
     menu: false,
-    type : ["Message","Meeting","Pre-placement Talk","Test"]
+    type: ["Message", "Meeting", "Pre-placement Talk", "Test"]
   }),
   computed: {
     completedTasks() {
@@ -438,10 +433,8 @@ export default {
       return this.tasks.length - this.completedTasks;
     }
   },
-   components: {
-      Vision: () => import('@/components/commonDashboard/Vision'),
-      Team: () => import('@/components/commonDashboard/Team'),
-      Footer: ()=>import('@/layouts/footer/Footer') 
+  components: {
+    Team: () => import('@/components/commonDashboard/Team')
   },
   created() {
     const access_token = window.$cookies.get("jwt");
@@ -450,9 +443,9 @@ export default {
     this.initialize();
   },
   methods: {
-            save (date) {
-        this.$refs.menu.save(date)
-      },
+    save(date) {
+      this.$refs.menu.save(date)
+    },
     initialize() {
       this.$axios.get('/api/announcements/')
         .then(res => {
@@ -471,32 +464,31 @@ export default {
 
       this.task = null;
     },
-            closeDialog(){
-          this.dialog = false; 
-          this.error="";
-          this.$refs.form.reset();
-        },
-            submitMessage(){
+    closeDialog() {
+      this.dialog = false;
+      this.error = "";
+      this.$refs.form.reset();
+    },
+    submitMessage() {
 
-            let isValid = this.$refs.form.validate(true);
-            if(isValid){
-                this.dialog = false;
-                this.$axios.post('/api/announcements/', this.announcement)
-                .then(response =>{
-                console.log(" message submitted",response.data)
-                this.$refs.form.reset();
-                this.initialize();
-                })
-                .catch(error =>{
-                    console.log(error)
-                })
-            }
-            else{
-              this.error = "Fill all the required Fields";
-            } 
-        },
+      let isValid = this.$refs.form.validate(true);
+      if (isValid) {
+        this.dialog = false;
+        this.$axios.post('/api/announcements/nil', this.announcement)
+          .then(response => {
+            console.log(" message submitted", response.data)
+            this.$refs.form.reset();
+            this.initialize();
+          })
+          .catch(error => {
+            console.log(error)
+          })
+      } else {
+        this.error = "Fill all the required Fields";
+      }
+    },
     getDate(dateString) {
-      return new Date(dateString).toString().slice(4,11);
+      return new Date(dateString).toString().slice(4, 11);
     },
     timeSince(dateString) {
       var date = new Date(dateString);

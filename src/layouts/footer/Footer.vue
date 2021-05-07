@@ -1,10 +1,5 @@
 <template>
-<v-container fluid>
-    <!-- <v-footer app  color="white" class="footerpart" inset>
-      <v-col cols="12">
-        <span>© {{ new Date().getFullYear() }} — Material Pro Admin by wrappixel.com</span>
-      </v-col>
-    </v-footer> -->
+<div>
     <div class="row">
       <aside id="text-3" class="widget widget_text">
       <div class="textwidget"><p><img class="alignnone size-medium wp-image-1069" src="https://www.cbit.ac.in/wp-content/uploads/2020/01/logo.png" alt="" width="300" height="88"></p></div>
@@ -30,7 +25,7 @@
               </div>
             
         </div>
-      </v-container>
+      </div>
 </template>
 <script>
 export default {

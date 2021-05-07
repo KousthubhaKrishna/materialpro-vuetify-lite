@@ -199,7 +199,6 @@ export default {
         nativeEvent.stopPropagation()
       },
       updateRange ({ start, end }) {
-        console.log("KOU",start);
         // const events = [
         //   {
         //     name: "name",
@@ -216,8 +215,10 @@ export default {
         // ]
 
         const events = [];
-        console.log(this.fetchedEvents);
         for(let i = 0; i < this.fetchedEvents.length; i++) {
+          if(!this.fetchedEvents[i].date) {
+            continue;
+          }
           events.push({
             name: this.fetchedEvents[i].title,
             start: this.formatDate(new Date(this.fetchedEvents[i].date),false),

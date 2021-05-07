@@ -1,11 +1,13 @@
 const express = require('express')
 const serveStatic = require('serve-static')
+const cors = require("cors");
 const path = require('path')
 
 const app = express()
 
 //here we are configuring dist to serve app files
 app.use('/', serveStatic(path.join(__dirname, '/dist')))
+app.use(cors());
 
 // this * route is to serve project on different page routes except root `/`
 app.get(/.*/, function (req, res) {

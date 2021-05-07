@@ -1,6 +1,6 @@
 <template>
   <v-row class="fill-height" align="center" justify="center">
-    <v-card width="950" :loading="loading">
+    <v-card width="1100" :loading="loading" outlined>
       <v-row>
         <v-col>
           <v-img class="pa-10" contain src="@/assets/images/back.png" width="500">
@@ -33,10 +33,10 @@
               label="Password"
               @click:append="passShow = !passShow"
               ></v-text-field>
-            <v-btn text small justify="left" @click.stop="openDialog" color="primary"> Forgot Password ? </v-btn>
-            <v-btn light color="primary" large @click="validateFields">
+            <v-btn light color="primary" class="mr-10" large @click="validateFields">
               Login
             </v-btn>
+            <v-btn text small justify="left" @click.stop="openDialog" color="primary"> Forgot Password ? </v-btn>
           </form>
           <p class="caption">
             *Please contact your class or branch placement co-ordinater for

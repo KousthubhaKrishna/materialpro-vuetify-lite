@@ -5,6 +5,7 @@ import router from './router'
 import store from './store'
 import './plugins/base'
 import axios from "axios";
+import './registerServiceWorker'
 
 axios.defaults.withCredentials = true;
 Vue.config.productionTip = false

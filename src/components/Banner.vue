@@ -6,11 +6,13 @@
       hide-delimiter-background
       show-arrows-on-hover
     >
-      <v-carousel-item>
+      <v-carousel-item v-for="(image, index) in backgroundImages" :key="index">
         <v-img
           contain
-          src="@/assets/images/about.jpg"
-          gradient="to bottom, rgba(2,44,2,0.955) 34%, rgba(5,66,4,0.947) 78%, rgba(160,131,0,1) 100%"
+          :src="getImgUrl(image)"
+          gradient="to bottom, rgba(2,44,2,0.9) 34%, rgba(5,66,4,0.9) 78%"
+          width="3000"
+          height="400"
         >
           <v-row class="fill-height" align="center" justify="center">
             <div align="center">
@@ -20,21 +22,25 @@
               <p class="display-1">
                 #CBIT
               </p>
+              <v-btn large color="primary" to="/login"> Login </v-btn>
             </div>
           </v-row>
         </v-img>
       </v-carousel-item>
     </v-carousel>
-
-    <v-container>
-      <h1>Home Page</h1>
-    </v-container>
   </div>
 </template>
 
 <script>
 export default {
-  name: "HomePage",
-  data: () => ({})
+  name: "Banner",
+  data: () => ({
+    backgroundImages : ["about.jpg","i3.jpg","i5.jpg"]
+  }),
+  methods :{
+    getImgUrl(name) {
+      return require("@/assets/images/"+name);
+    }
+  }
 };
 </script>
