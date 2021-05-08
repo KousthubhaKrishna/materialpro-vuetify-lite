@@ -22,8 +22,8 @@
               <p class="display-1">
                 #CBIT
               </p>
-              <v-btn large color="primary" to="/login" class="mr-6"> Login </v-btn>
-              <v-btn large color="primary" to="/onGoingPlacements"> View Ongoing Placements </v-btn>
+              <v-btn large color="primary" to="/login" class="mb-3"> Login </v-btn> <br/>
+              <v-btn medium class="green darken-3" to="/onGoingPlacements"> View Ongoing Placements </v-btn>
               
             </div>
           </v-row>

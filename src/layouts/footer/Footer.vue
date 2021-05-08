@@ -1,13 +1,10 @@
 <template>
-<div>
-    <div class="row">
-      <aside id="text-3" class="widget widget_text">
+<v-card>
+    <v-card-text>
       <div class="textwidget"><p><img class="alignnone size-medium wp-image-1069" src="https://www.cbit.ac.in/wp-content/uploads/2020/01/logo.png" alt="" width="300" height="88"></p></div>
-      </aside>
-    </div>
-    <div class="row">
-            <div class="col-md-6">
-                <div class="f-left-col">
+        <div>
+            <div>
+                <div>
                     
                       <p>College Contact Info</p>
                       <p>Gandipet, Hyderabad, Telangana,<br>
@@ -16,7 +13,7 @@
                       
                 </div>
               </div>
-              <div class="col-md-6">
+              <div>
                 <p>
                   Phone: 040-24193276<br>
                   Mobile: 8466997201<br>
@@ -25,7 +22,8 @@
               </div>
             
         </div>
-      </div>
+    </v-card-text>
+      </v-card>
 </template>
 <script>
 export default {

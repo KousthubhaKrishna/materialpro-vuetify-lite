@@ -1,5 +1,5 @@
 import axios from "axios";
-const baseURL = "";
+const baseURL = process.env.FILE_SERVER || "";
 
 class UploadFilesService {
     upload(company, file, onUploadProgress) {

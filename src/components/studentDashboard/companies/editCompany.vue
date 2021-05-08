@@ -58,7 +58,7 @@
                   <v-textarea
                     ref="description"
                     name="input-7-1"
-                    label="Job Description"
+                    label="Description"
                     v-model="companyData.description"
                     auto-grow
                     >
