@@ -90,8 +90,8 @@
                 {{ item.title }}
             </v-col>
             <v-col align="right">
-                <v-btn v-if="(item.created_by && item.created_by._id == user._id)" color="primary" @click="editItem(item)"> <v-icon small> mdi-pencil </v-icon> </v-btn>
-                <v-btn v-if="(item.created_by && $PERMISSIONS.MED.has(user.role)) || (item.created_by && item.created_by._id == user._id)" @click="openDeleteDialog(item)" color="error" > <v-icon small> mdi-delete </v-icon> </v-btn>
+                <v-btn v-if="(item.created_by && item.created_by._id == user._id) || (!item.created_by && $PERMISSIONS.MED.has(user.role))" color="primary" @click="editItem(item)"> <v-icon small> mdi-pencil </v-icon> </v-btn>
+                <v-btn v-if="(item.created_by && item.created_by._id == user._id) || ($PERMISSIONS.MED.has(user.role))" @click="openDeleteDialog(item)" color="error" > <v-icon small> mdi-delete </v-icon> </v-btn>
             </v-col>
         </v-row>
         </v-card-title>
@@ -201,6 +201,7 @@ export default {
             .then(res => {
                 this.fetchedData = res.data;
                 this.displayData = this.fetchedData;
+                console.log(this.displayData);
             })
             .catch(err => {
                 console.log(err);

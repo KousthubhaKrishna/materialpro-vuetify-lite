@@ -109,20 +109,19 @@ export default {
           to: "/dashboard/placements"
         },
         {
+          title: "Company",
+          icon: "mdi-office-building",
+          to: "/dashboard/company"
+        },
+        {
           title: "Calendar",
           icon: "mdi-calendar",
           to: "/dashboard/calendar",
         },
-
         {
           title: "Interview experiences",
           icon: "mdi-tie",
           to: "/dashboard/interview-experience",
-        },
-        {
-          title: "Company",
-          icon: "mdi-office-building",
-          to: "/dashboard/company"
         },
         {
           title: "E-resources",

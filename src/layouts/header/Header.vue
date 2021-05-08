@@ -54,7 +54,7 @@ export default {
       { title: "My Balance" },
       { title: "Inbox" },
       { title: "Account Setting" },
-      { title: "Logout", method: this.logout()}
+      { title: "Logout" },
     ],
     href() {
       return undefined;

@@ -1,5 +1,5 @@
 import axios from "axios";
-const baseURL = "http://localhost:8888";
+const baseURL = "";
 
 class UploadFilesService {
     upload(company, file, onUploadProgress) {

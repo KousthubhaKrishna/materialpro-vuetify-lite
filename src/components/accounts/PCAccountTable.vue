@@ -268,7 +268,7 @@
       addAccount() {
         //validate them
         if(this.editAccountDialog) {
-          this.$axios.patch('/api/addCoordinator', this.newAccount)
+          this.$axios.patch('/api/updateCoordinator', this.newAccount)
           .then( response => {
             if(response.status == 201) {
               this.snackbar.text = "Updated "+ this.newAccount.user_email + " account";

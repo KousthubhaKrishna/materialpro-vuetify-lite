@@ -56,7 +56,7 @@ function urlB64ToUint8Array(base64String) {
 if ('serviceWorker' in navigator && 'PushManager' in window) {
   console.log('Service Worker and Push is supported');
 
-  navigator.serviceWorker.register(`${process.env.BASE_URL}service-worker.js`)
+  navigator.serviceWorker.register(`sw.js`)
     .then(function (swReg) {
       console.log('service worker registered');
 

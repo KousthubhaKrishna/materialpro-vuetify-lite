@@ -9,7 +9,7 @@
                 <h3 class="title blue-grey--text text--darken-2 font-weight-regular">Annoucements
                 </h3>
               </v-col>
-              <v-col align="right">
+              <v-col v-if="$PERMISSIONS.MED.has(this.user.role)" align="right">
                 <v-btn
                   class="mx-2"
                   elevation="1"
@@ -63,20 +63,20 @@
               >
                 <v-timeline-item
                   v-for="(item,index) in activity"
-                  class="mb-4"
+                  :color="item.actType"
                   small
                   :key="index"
 
                 >
                   <v-row justify="space-between">
                     <v-col cols="7">
-                      {{ item.message }}
+                      {{ item.text }}
                     </v-col>
                     <v-col
                       class="text-right"
                       cols="5"
                     >
-                      {{ item.time }}
+                      {{ getDate(item.date) }}
                     </v-col>
                   </v-row>
                 </v-timeline-item>
@@ -225,7 +225,8 @@ export default {
     padding2: 0,
     value2: [1, 2, 5, 9, 5, 10, 3, 5, 1, 8, 2, 9, 4],
     width2: 4,
-    activity: [
+    activity:[],
+    activity1: [
       {
         message: "Registered for Amazon Internship Drive",
         time: "May 04, 2020"
@@ -284,7 +285,14 @@ export default {
       this.$axios.get('/api/announcements/')
         .then(res => {
           this.announcements = res.data;
-          console.log(this.announcements);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+      this.$axios.get('/api/activity/' + this.user._id)
+        .then(res => {
+          var list = res.data.list || [];
+          this.activity = list.reverse();
         })
         .catch(err => {
           console.log(err);
