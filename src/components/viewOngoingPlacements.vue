@@ -1,7 +1,11 @@
 <template>
-  <v-container fluid class="down-top-padding">  
+  <v-container fluid >  
       <v-sheet class="ma-2 pa-5" height="100%">
           <h2> Placements </h2>
+    <div class="pa-5">
+
+
+
 
     <v-card class="mb-5">
       <v-card-actions >
@@ -30,20 +34,7 @@
               v-model="filter.placement_batch"
               ></v-text-field>
           </v-col>
-          <!-- <v-col align-self="center">
-          <v-btn color="primary" @click="filterData" > <v-icon> mdi-magnify </v-icon> </v-btn>
-          </v-col>
-          <v-col align-self="center">
-            <v-btn :color="this.editor.toggleColor" @click="toggleEditor" >
-              <v-icon
-                small
-                class="mr-2"
-                >
-                {{ this.editor.toggleIcon || "mdi-note-plus" }}
-              </v-icon>
-              {{ this.editor.toggleText }}
-            </v-btn>
-          </v-col> -->
+         
         </v-row>
       </v-card-actions>
     </v-card>
@@ -54,9 +45,11 @@
         <v-col cols="12" sm="2">Job Role</v-col>
         <v-col cols="12" sm="2">Job Type</v-col>
         <v-col cols="12" sm="2">Company Name</v-col>
-        <v-col cols="12" sm="2">Batch</v-col>
+        <v-col cols="12" sm="1">Batch</v-col>
         <v-col cols="12" sm="2">Branch</v-col>
         <v-col cols="12" sm="2">Package</v-col>
+        <v-col cols="12" sm="1">CGPA</v-col>
+
     </v-row>
     <v-divider></v-divider>
       <v-row v-for="placement in filteredPlacements" :key="placement._id">
@@ -64,7 +57,7 @@
               v-slot="{ hover }"
               open-delay="200"
             >
-              <v-sheet @click="openPlacement(placement._id)" style="width:100%"
+              <v-sheet style="width:100%"
                 :elevation="hover ? 10 : 1"
                 :color="hover ? '#ECF0F1' : 'white'"
                 :class="{ 'on-hover': hover }">
@@ -72,15 +65,17 @@
                   <v-col cols="12" sm="2">{{ placement.job_role }}</v-col>
                   <v-col cols="12" sm="2">{{ placement.job_type }}</v-col>
                   <v-col cols="12" sm="2">{{ placement.company_id.company_name }}</v-col>
-                  <v-col cols="12" sm="2">{{ placement.placement_batch }}</v-col>
+                  <v-col cols="12" sm="1">{{ placement.placement_batch }}</v-col>
                   <v-col cols="12" sm="2">{{ placement.eligibility.branches }}</v-col>
                   <v-col cols="12" sm="2">{{ placement.package }}</v-col>
-
+                  <v-col cols="12" sm="1">{{ placement.eligibility.cgpa  }}</v-col>
                   </v-row>
               </v-sheet>
           </v-hover>
       </v-row>
+      </div>
       </v-sheet>
+      
   </v-container>
 </template>
 
@@ -89,7 +84,7 @@ import axios from 'axios'
 
 
 export default {
-  name: "Placements",
+  name: "viewOngoingPlacements",
 
   data: () => ({
       placements:[],
@@ -100,12 +95,12 @@ export default {
       }
   }),
    methods:{
-      openPlacement(data){
-          this.$router.push({
-            name: 'Placement',
-            params: { id: data }
-        });
-      },
+    //   openPlacement(data){
+    //       this.$router.push({
+    //         name: 'Placement',
+    //         params: { id: data }
+    //     });
+    //   },
   },
 
   computed:{

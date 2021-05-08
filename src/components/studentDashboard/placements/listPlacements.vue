@@ -2,7 +2,7 @@
   <v-container fluid >
     <v-card >
         <v-img
-        lazy-src="https://picsum.photos/id/11/10/6"
+        lazy-src="https://us.123rf.com/450wm/deniaz/deniaz2002/deniaz200200068/139842414-photography-grey-card-for-white-balance-isolated-on-a-white-background-with-copy-space-.jpg?ver=6"
         :aspect-ratio="16/10"
         max-height="280"
         width = "100%"

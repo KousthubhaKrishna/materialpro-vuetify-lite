@@ -38,6 +38,12 @@ export default new Router({
             ]
         },
         {
+            path: '/onGoingPlacements',
+            name: "OngoingPlacements",
+            component: () => import('@/components/viewOngoingPlacements'),
+
+        },
+        {
             path: '/dashboard',
             component: Layout,
             // redirect :'dashboard/basic-dashboard',

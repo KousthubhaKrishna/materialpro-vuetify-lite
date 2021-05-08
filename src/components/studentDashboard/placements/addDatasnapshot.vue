@@ -12,7 +12,7 @@
           v-bind="attrs"
           v-on="on"
         >
-          Add DataSnapshot
+          Add DataSnaps
         </v-btn>
       </template>
       <v-card>

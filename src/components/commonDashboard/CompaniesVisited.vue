@@ -1,46 +1,30 @@
 <template>
-  <v-sheet
+  <v-card
     class="mx-auto"
     max-width="1000"
+    outlined
+    color="gray"
+    style="width:100%"
   >
-    <v-row align="center" justify="center" class="pt-3">
-        <h2 class="indigo--text text--darken-1"> Companies Visited </h2>
+    <!-- <v-row align="center" justify="center" class="pt-3">
+        <h2 style="font-size:2rem;font:roboto;font-weight:300">Top  Visited Companies</h2>
     </v-row>
-    <v-slide-group
-      v-model="model"
-      class="pb-3"
-      center-active
-      show-arrows
-    >
-      <v-slide-item
-        v-for="(company,index) in companies"
-        :key="index"
-        v-slot="{ active, toggle }"
-      >
-        <v-card
-          :color="active ? 'primary' : 'grey lighten-1'"
-          class="ma-4"
-          height="100"
-          width="150"
-          @click="toggle"
-        >
+
+    <div>
+      <v-row >
+        <v-col v-for="(img,index) in items" :key="index" col="12" sm="2">
+
             <v-img
-                height="100"
-                width="150"
-                :src="company.photo_url"
-                />
-          <v-row
-            class="fill-height"
-            align="center"
-            justify="center"
-          >
-            <v-scale-transition>
-            </v-scale-transition>
-          </v-row>
-        </v-card>
-      </v-slide-item>
-    </v-slide-group>
-  </v-sheet>
+              :src="img.url"
+              :alt="img.name"
+            ></v-img>
+
+        </v-col>
+      </v-row>
+    </div> -->
+
+
+  </v-card>
 </template>
 
 
@@ -50,6 +34,43 @@
     data: () => ({
       model: null,
       companies: [],
+      items:[
+        { 
+          name:"Microsoft",
+          url:'https://www.smartinterviews.in/assets/images/microsoft.png'
+        },
+        { 
+          name:"Oracle",
+          url:'https://www.smartinterviews.in/assets/images/oracle-logo.png'
+        },
+        { 
+          name:"Microsoft",
+          url:'https://www.smartinterviews.in/assets/images/microsoft.png'
+        },
+        { 
+          name:"Microsoft",
+          url:'https://www.smartinterviews.in/assets/images/microsoft.png'
+        },
+        { 
+          name:"Microsoft",
+          url:'https://www.smartinterviews.in/assets/images/microsoft.png'
+        },
+        { 
+          name:"Microsoft",
+          url:'https://www.smartinterviews.in/assets/images/microsoft.png'
+        },
+        { 
+          name:"Microsoft",
+          url:'https://www.smartinterviews.in/assets/images/microsoft.png'
+        },{ 
+          name:"Microsoft",
+          url:'https://www.smartinterviews.in/assets/images/microsoft.png'
+        },
+        { 
+          name:"Microsoft",
+          url:'https://www.smartinterviews.in/assets/images/microsoft.png'
+        },
+      ],
     }),
     created() {
         this.getCompanies();

@@ -1,18 +1,6 @@
 <template>
-<v-col >
-   <v-card class="ma-2">
-    <v-card-title>
-      {{ snap.snap_name }}
-    </v-card-title>
-
-    <v-card-text>
-      {{ snap.type_of_data }}<br/>
-      {{ snap.placement_batch }}<br/>
-      {{ snap.last_date }}<br/>
-    </v-card-text>
-  </v-card>
-
-  <div>
+<v-col col="12">
+  
     <v-data-table
       v-model= "selected"
       @input="enterSelect()"
@@ -27,12 +15,20 @@
         <v-toolbar
           flat
         >
-          <v-toolbar-title>{{ snap.type_of_data }} </v-toolbar-title>
+          <v-toolbar-title class="font-weight-medium">{{ snap.snap_name }} </v-toolbar-title>
           <v-divider
             class="mx-4"
             inset
             vertical
           ></v-divider>
+          <v-row align="left">
+            <v-col cols="12" class="pt-1 pb-0">
+              <v-toolbar-title style="font-size:1rem;" class="blue--text">{{ snap.type_of_data }}</v-toolbar-title>
+            </v-col >
+            <v-col cols="12" class="pt-1 pb-0">
+              <v-toolbar-title style="font-size:.7rem;">{{ getDate(snap.last_date) }}</v-toolbar-title>
+            </v-col>
+          </v-row>
           <v-spacer></v-spacer>
           <v-dialog
             v-model="dialog"
@@ -117,13 +113,7 @@
         </v-toolbar>
       </template>
       <template v-slot:[`item.actions`]="{ item }">
-        <!-- <v-icon
-          small
-          class="mr-2"
-          @click="editItem(item)"
-        >
-          mdi-pencil
-        </v-icon> -->
+        
         <v-icon
           small
           @click="deleteItem(item)"
@@ -133,11 +123,11 @@
       </template>
     
     </v-data-table>
-    <div class="text-right ma-4">
-      <AddDatasnapshot :first="isFirst" class="d-inline"></AddDatasnapshot>
-    <v-btn color="green" class="d-inline" v-if="!isPlacedSnap && !isPlaced"  @click="createPlacedData">create placed students snap</v-btn>
+    <div class="text-right ma-4 pt-5">
+      <AddDatasnapshot :first="isFirst" class="d-inline pr-4"></AddDatasnapshot>
+    <v-btn color="green" class="d-inline pr-4" v-if="!isPlacedSnap && !isPlaced"  @click="createPlacedData">create placed students snap</v-btn>
     </div>
-  </div>
+
 
 </v-col>
 </template>
@@ -232,6 +222,10 @@ import { EventBus } from '@/event-bus.js'
 
     confirm(){
       this.initialize();
+    },
+
+    getDate(dateString) {
+      return new Date(dateString).toString().slice(4, 15);
     },
 
     getSnapData(val){

@@ -2,20 +2,19 @@
   <v-container fluid class="down-top-padding">
     <h2> Interview Experiences </h2>
     <p> View, Add Interview Experiences. </p>
+    
     <v-card class="mb-5">
-      <v-toolbar
-        flat
-        >
+     <v-card-actions>
         <v-row>
           <v-col align-self="center">
-            <h5>
+            <h3 class=" font-weight-medium">
               <v-icon
-                class="mr-2"
+                class="mx-2"
                 color="primary">
                 mdi-filter
               </v-icon>
               Filters 
-            </h5>
+            </h3>
           </v-col>
           <v-col>
             <v-text-field
@@ -44,7 +43,7 @@
             </v-btn>
           </v-col>
         </v-row>
-      </v-toolbar>
+      </v-card-actions>
     </v-card>
 
     <v-card v-if="editor.show" class="mb-5">

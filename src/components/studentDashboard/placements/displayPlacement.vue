@@ -7,7 +7,7 @@
         <v-row>
           <v-col cols="12" sm="6">
            <v-card >
-             <v-card-title style="font-size:1.5rem" class=" mx-1 pt-5">
+             <v-card-title style="font-size:1.4rem" class=" mx-1 pt-5">
                Placement Details
 
               <v-spacer></v-spacer>
@@ -25,7 +25,7 @@
             </v-card-title>
             <v-dialog v-model="dialogDelete" max-width="500px">
             <v-card class='pa-3'>
-              <v-card-title><v-icon></v-icon> you sure you want to delete this item?</v-card-title>
+              <v-card-title><v-icon class="pr-2">mdi-alert</v-icon> Are sure you want to delete this item?</v-card-title>
               <v-card-actions>
                 <v-spacer></v-spacer>
                 <v-btn color="blue darken-1" text @click="closeDelete">Cancel</v-btn>
@@ -37,7 +37,7 @@
 
         
         <v-row class="mx-1">
-          <v-card-subtitle> Basic Information</v-card-subtitle>
+          <v-card-subtitle class="blue--text"> Basic Information</v-card-subtitle>
             <v-card-text>
               <p class="font-weight-medium"> Job Role:  <span class="font-weight-regular">{{ placement.job_role }}</span></p>
               <p class="font-weight-medium"> Job Type:  <span class="font-weight-regular">{{ placement.job_type }}</span></p>
@@ -47,7 +47,7 @@
               </v-card-text>
 
 
-            <v-card-subtitle> Eligibility Criteria</v-card-subtitle>
+            <v-card-subtitle class="green--text"> Eligibility Criteria</v-card-subtitle>
             <v-card-text>
               <p class="font-weight-medium"> CGPA:  <span class="font-weight-regular">{{ placement.eligibility.cgpa }}</span></p>
               <p class="font-weight-medium"> Backlogs:  <span class="font-weight-regular">{{ placement.eligibility.backlogs }}</span></p>
@@ -55,7 +55,7 @@
               </v-card-text>
 
 
-              <v-card-subtitle v-if="placement.job_description.length != 0" style="white-space: pre-line;"> Job Description</v-card-subtitle>
+              <v-card-subtitle v-if="placement.job_description.length != 0" style="white-space: pre-line;" class="blue--text"> Job Description</v-card-subtitle>
               <v-card-text  class="font-weight-regular">{{ placement.job_description }}</v-card-text>
             
         </v-row>
@@ -84,12 +84,15 @@
                         v-if="$PERMISSIONS.MED.has(user.role)"
                       >
                         <template v-slot:activator="{ on, attrs }">
-                            <v-icon 
+                           <v-btn
+                            color="gray"
+                            icon
+                            large
                             v-bind="attrs"
                             v-on="on"
-                            >
-                            mdi-plus
-                            </v-icon>
+                          >
+                            <v-icon>mdi-plus</v-icon>
+                          </v-btn>
                         </template>
                         <v-card>  
                           <v-card-title>
@@ -193,10 +196,10 @@
                       </v-dialog>
 
                   </v-card-title>
-                  <v-card-text v-if="announcements.length == 0" justify="center" align="center"> No Announcements under this placement yet</v-card-text>
+                  <v-card-text v-if="announcements.length == 0" justify="center" align="center" class="py-10"> No Announcements under this placement yet <v-spacer></v-spacer></v-card-text>
 
-                  <v-spacer></v-spacer>
-                    <v-col col="12" v-for="(ann,index) in announcements" :key="index" class="pt-1 px-4">
+                  
+                    <v-col v-else col="12" v-for="(ann,index) in announcements" :key="index" class="pt-1 px-4" >
                       <v-card outlined elevation="0">
                         <v-card-title>{{ann.title}}
                           <v-spacer></v-spacer>
@@ -224,9 +227,9 @@
         <v-sheet>
           <v-row class="ma-2"  v-if="$PERMISSIONS.MED.has(user.role)">
             <v-col cols="12">
-              <v-card-title style="font-size: 1.5em;">Data Snapshots 
+              <v-card-title style="font-size:1.5rem" class=" mx-1 pt-5 pa-0">Data Snapshots 
                   <v-spacer></v-spacer>
-                  <AddDatasnapshot :first="isFirst"></AddDatasnapshot>
+                  <AddDatasnapshot :first="isFirst" class="pt-3"></AddDatasnapshot>
                 </v-card-title> 
             </v-col>
           </v-row>
@@ -246,13 +249,12 @@
                         <v-icon>mdi-download</v-icon>
                       </v-btn>
                     </v-card-actions>
-                    <!-- <v-card-text>{{ snap.type_of_data}}</v-card-text> -->
                     
                   </v-card>
                 </v-col>
             </v-row>
 
-                <v-row v-for="snap in snaps" :key="snap._id">
+                <v-row v-for="snap in snaps" :key="snap._id" class="pt-5">
                   <DisplayDatasnapshot v-if="disable == snap._id" :snapId="snapId" :isPlaced="isPlaced" ></DisplayDatasnapshot>
                 </v-row>
         </v-sheet>
@@ -440,7 +442,7 @@ import { EventBus } from '@/event-bus.js'
 
               if( res.data.education.cgpa >= this.placement.eligibility.cgpa 
                 && res.data.education.backlogs <= this.placement.eligibility.backlogs
-                && this.placement.eligibility.branches.includes((res.data.basic_info.branch).toUpperCase())
+                && (this.placement.eligibility.branches.includes((res.data.basic_info.branch).toUpperCase()) || this.placement.eligibility.branches.includes("all"))
                 && this.placement.placement_batch == res.data.basic_info.placement_batch
                 && res.data.is_verified){
                   
