@@ -51,12 +51,13 @@
     <v-divider></v-divider>
     
     <v-row class = "blue--text">
-        <v-col cols="12" sm="2">Job Role</v-col>
-        <v-col cols="12" sm="2">Job Type</v-col>
+        <v-col cols="12" sm="1">Job Role</v-col>
+        <v-col cols="12" sm="1">Job Type</v-col>
         <v-col cols="12" sm="2">Company Name</v-col>
-        <v-col cols="12" sm="2">Batch</v-col>
-        <v-col cols="12" sm="2">Branch</v-col>
+        <v-col cols="12" sm="1">Batch</v-col>
+        <v-col cols="12" sm="3">Branch</v-col>
         <v-col cols="12" sm="2">Package</v-col>
+        <v-col cols="12" sm="1">CGPA</v-col>
     </v-row>
     <v-divider></v-divider>
       <v-row v-for="placement in filteredPlacements" :key="placement._id">
@@ -69,13 +70,21 @@
                 :color="hover ? '#ECF0F1' : 'white'"
                 :class="{ 'on-hover': hover }">
                   <v-row class="pl-4">
-                  <v-col cols="12" sm="2">{{ placement.job_role }}</v-col>
-                  <v-col cols="12" sm="2">{{ placement.job_type }}</v-col>
-                  <v-col cols="12" sm="2">{{ placement.company_id.company_name }}</v-col>
-                  <v-col cols="12" sm="2">{{ placement.placement_batch }}</v-col>
-                  <v-col cols="12" sm="2">{{ placement.eligibility.branches }}</v-col>
+                  <v-col cols="12" sm="1">{{ placement.job_role }}</v-col>
+                  <v-col cols="12" sm="1">{{ placement.job_type }}</v-col>
+                  <v-col cols="12" sm="2">
+                      <p class="primary--text">
+                        {{ placement.company_id.company_name }}
+                      </p>
+                  </v-col>
+                  <v-col cols="12" sm="1">{{ placement.placement_batch }}</v-col>
+                  <v-col cols="12" sm="3">
+                    <v-chip v-for="branch in placement.eligibility.branches" :key="branch">
+                      {{ branch }}
+                    </v-chip>
+                  </v-col>
                   <v-col cols="12" sm="2">{{ placement.package }}</v-col>
-
+                  <v-col cols="12" sm="1">{{ placement.eligibility.cgpa  }}</v-col>
                   </v-row>
               </v-sheet>
           </v-hover>

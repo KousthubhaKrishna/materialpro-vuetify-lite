@@ -96,10 +96,14 @@
 
               
               <v-col cols="12">
-                <p>
-                  {{enteredFields}}
-                </p>
-
+                <div>
+                  <v-chip
+                  v-for="(field,index) in entered" :key="index"
+                  @click:close="remove(index)"
+                  color="primary" close text-color="white">
+                   {{ field }} 
+                  </v-chip>
+                </div>
                 <v-text-field
                   label="Extra Fields"
                   v-model="extra_field"
@@ -198,15 +202,19 @@ import { EventBus } from '@/event-bus.js'
           return data;
       },
 
-
       enter(){
         this.extra_fields.push(this.getField(this.extra_field));
         this.entered.push(this.extra_field);
         this.extra_field = '';
-        console.log(this.extra_fields)
       },
 
-        save (date) {
+      remove(ind){
+        this.extra_fields.splice(ind,1);
+        this.entered.splice(ind,1);
+        this.extra_field = '';
+      },
+
+      save (date) {
         this.$refs.menu.save(date)
         console.log(this.snapData.last_date);
       },

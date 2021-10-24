@@ -1,7 +1,7 @@
 <template>
 <v-container>
 
-        <p style="font-size:3rem;font:roboto;font-weight:300" class="mt-5 mx-5 pt-10">
+        <p style="font-size:3rem;font:roboto;font-weight:400;" class="mt-5 mx-5 pt-10">
                {{ placement.company_id.company_name }}
             </p>
         <v-row>
@@ -37,21 +37,31 @@
 
         
         <v-row class="mx-1">
-          <v-card-subtitle class="blue--text"> Basic Information</v-card-subtitle>
+          <v-card-subtitle class="primary--text">
+            <h3>Basic Information</h3>
+          </v-card-subtitle>
             <v-card-text>
               <p class="font-weight-medium"> Job Role:  <span class="font-weight-regular">{{ placement.job_role }}</span></p>
               <p class="font-weight-medium"> Job Type:  <span class="font-weight-regular">{{ placement.job_type }}</span></p>
-              <p class="font-weight-medium"> Package:  <span class="font-weight-regular">{{ placement.package }}</span></p>
+              <p class="font-weight-medium"> Package:  <span class="font-weight-bold">
+                <v-chip color="blue" text-color="white" class="" > {{ placement.package }} </v-chip>
+              </span></p>
               <p class="font-weight-medium"> Placement Batch:  <span class="font-weight-regular">{{ placement.placement_batch }}</span></p>
               <p class="font-weight-medium"> Drive Details:  <span class="font-weight-regular">{{ placement.drive_details }}</span></p>
               </v-card-text>
 
 
-            <v-card-subtitle class="green--text"> Eligibility Criteria</v-card-subtitle>
+            <v-card-subtitle class="green--text"> 
+              <h3> Eligibility Criteria </h3>
+            </v-card-subtitle>
             <v-card-text>
-              <p class="font-weight-medium"> CGPA:  <span class="font-weight-regular">{{ placement.eligibility.cgpa }}</span></p>
-              <p class="font-weight-medium"> Backlogs:  <span class="font-weight-regular">{{ placement.eligibility.backlogs }}</span></p>
-              <p class="font-weight-medium"> Branches:  <span class="font-weight-regular">{{ placement.eligibility.branches }}</span></p>
+              <p class="font-weight-medium"> CGPA:  <span class="font-weight-bold">{{ placement.eligibility.cgpa }}</span></p>
+              <p class="font-weight-medium"> Backlogs:  <span class="font-weight-bold red--text">{{ placement.eligibility.backlogs }}</span></p>
+              <p class="font-weight-medium"> Branches:  <span class="font-weight-regular">
+                <v-chip v-for="branch in placement.eligibility.branches" :key="branch" color="primary">
+                      {{ branch }}
+                </v-chip>
+              </span></p>
               </v-card-text>
 
 
@@ -212,9 +222,9 @@
                         </v-card-title>
                         <v-card-text class="pb-3">
                           <p class="font-weight-medium blue--text mb-1" >{{ann.type}}</p>
-                          {{ann.message}} 
+                          {{ann.message}}<br>
+                          {{getDate(ann.posted_date)}}
                         </v-card-text>
-                        <!-- <v-card-subtitle class="text-right font-weight-light pa-0">{{ann.posted_date}}</v-card-subtitle> -->
                       </v-card>
                     </v-col>
                   
@@ -549,6 +559,10 @@ import { EventBus } from '@/event-bus.js'
               this.error = "Fill all the required Fields";
             } 
         },
+
+    getDate(dateString) {
+        return new Date(dateString).toString().slice(4, 11);
+      }
     },
     components:{
       AddDatasnapshot: () => import('@/components/studentDashboard/placements/addDatasnapshot'),
